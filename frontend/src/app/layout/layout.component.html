@@ -1,0 +1,23 @@
+<!-- src/app/layout/layout.component.html -->
+<div class="layout-container">
+    <!-- HEADER -->
+    <header class="header">
+      <h1>Admin Panel</h1>
+      <button (click)="onLogout()">Çıkış</button>
+    </header>
+  
+    <div class="content">
+      <!-- SOL MENU (opsiyonel) -->
+      <nav class="sidebar">
+        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/users" *hasRole="['ADMIN']">Kullanıcılar</a>
+        <!-- vs... -->
+      </nav>
+  
+      <!-- ROUTER CONTENT -->
+      <main class="page-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+  

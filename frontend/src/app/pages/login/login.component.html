@@ -1,0 +1,32 @@
+<!-- src/app/pages/auth/login/login.component.html -->
+<mat-card>
+    <mat-card-title>Giriş Yap</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+          <mat-label>Şifre</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+        </mat-form-field>
+  
+        <button mat-raised-button color="primary" type="submit">Giriş</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
