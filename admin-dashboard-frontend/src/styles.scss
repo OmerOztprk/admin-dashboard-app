@@ -1,0 +1,12 @@
+/* Bootstrap'ın kendisini ekleyelim */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Global stillerimiz */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f7f7;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
