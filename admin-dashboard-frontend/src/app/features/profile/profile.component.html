@@ -1,0 +1,136 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2>Profil Ayarları</h2>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Profil Bilgileri</h5>
+        </div>
+        <div class="card-body">
+          @if(loadingProfile) {
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+              </div>
+            </div>
+          }
+
+          @if(profileSuccess) {
+            <div class="alert alert-success">{{ profileSuccess }}</div>
+          }
+
+          @if(profileError) {
+            <div class="alert alert-danger">{{ profileError }}</div>
+          }
+
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">Ad *</label>
+              <input type="text" class="form-control" formControlName="first_name" id="first_name">
+              @if(profileForm.get('first_name')?.invalid && profileForm.get('first_name')?.touched) {
+                <div class="text-danger">Ad alanı zorunludur</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Soyad</label>
+              <input type="text" class="form-control" formControlName="last_name" id="last_name">
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input type="email" class="form-control" formControlName="email" id="email">
+              @if(profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+                <div class="text-danger">
+                  @if(profileForm.get('email')?.errors?.['required']) {
+                    Email alanı zorunludur
+                  }
+                  @if(profileForm.get('email')?.errors?.['email']) {
+                    Geçerli bir email adresi giriniz
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="phone_number" class="form-label">Telefon</label>
+              <input type="tel" class="form-control" formControlName="phone_number" id="phone_number">
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || updatingProfile">
+              @if(updatingProfile) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Güncelleniyor...
+              } @else {
+                Profili Güncelle
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">Şifre Değiştir</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Mevcut Şifre *</label>
+              <input type="password" class="form-control" formControlName="currentPassword" id="currentPassword">
+              @if(passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+                <div class="text-danger">Mevcut şifre alanı zorunludur</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Yeni Şifre *</label>
+              <input type="password" class="form-control" formControlName="newPassword" id="newPassword">
+              @if(passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+                <div class="text-danger">
+                  @if(passwordForm.get('newPassword')?.errors?.['required']) {
+                    Yeni şifre alanı zorunludur
+                  }
+                  @if(passwordForm.get('newPassword')?.errors?.['minlength']) {
+                    Şifre en az 8 karakter olmalıdır
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Şifre Tekrarı *</label>
+              <input type="password" class="form-control" formControlName="confirmPassword" id="confirmPassword">
+              @if(passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched) {
+                <div class="text-danger">
+                  @if(passwordForm.get('confirmPassword')?.errors?.['required']) {
+                    Şifre tekrarı zorunludur
+                  }
+                  @if(passwordForm.get('confirmPassword')?.errors?.['mismatch']) {
+                    Şifreler eşleşmiyor
+                  }
+                </div>
+              }
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || updatingPassword">
+              @if(updatingPassword) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Güncelleniyor...
+              } @else {
+                Şifreyi Güncelle
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

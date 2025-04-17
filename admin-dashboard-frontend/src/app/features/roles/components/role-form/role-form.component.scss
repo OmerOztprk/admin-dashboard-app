@@ -1,0 +1,18 @@
+.permissions-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.permission-group-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+.permission-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.5rem;
+}

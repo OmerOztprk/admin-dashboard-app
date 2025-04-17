@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/services/auth.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, firstValueFrom, forkJoin } from 'rxjs';
 import { SystemPermissions } from '../../core/models/role.model';
 
 // API URL sabitini tanımla
@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     recentActivities: []
   };
   
+  loading = false;
   SystemPermissions = SystemPermissions;
   private destroy$ = new Subject<void>();
 
@@ -59,42 +60,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
   
   loadStats(): void {
-    // Kullanıcı sayısı
-    this.http.get<any>(`${API_URL}/stats/users/count`)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => this.stats.userCount = res.count || 0,
-        error: err => console.error('Kullanıcı sayısı alınamadı', err)
-      });
+    this.loading = true;
     
-    // Kategori sayısı
-    this.http.get<any>(`${API_URL}/stats/categories/count`)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => this.stats.categoryCount = res.count || 0,
-        error: err => console.error('Kategori sayısı alınamadı', err)
-      });
+    // Tüm istek sonuçlarını takip etmek için
+    const userCount$ = this.http.get<any>(`${API_URL}/stats/users/count`);
+    const categoryCount$ = this.http.get<any>(`${API_URL}/stats/categories/count`);
+    const auditLogCount$ = this.http.get<any>(`${API_URL}/stats/auditlogs/count`);
     
-    // Aktivite günlüğü sayısı
-    this.http.get<any>(`${API_URL}/stats/auditlogs/count`)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => this.stats.auditLogCount = res.count || 0,
-        error: err => console.error('Aktivite günlüğü sayısı alınamadı', err)
-      });
+    // ForkJoin ile tüm istekleri paralel olarak çalıştır ve hepsi tamamlandığında loading durumunu güncelle
+    forkJoin({
+      users: userCount$,
+      categories: categoryCount$,
+      auditLogs: auditLogCount$
+    })
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (results) => {
+        this.stats.userCount = results.users.count || 0;
+        this.stats.categoryCount = results.categories.count || 0;
+        this.stats.auditLogCount = results.auditLogs.count || 0;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('İstatistikler alınırken hata oluştu', err);
+        this.loading = false;
+      }
+    });
   }
   
-  loadRecentActivities(): void {
-    this.http.get<any>(`${API_URL}/auditlogs/recent`)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: res => this.stats.recentActivities = res.logs || [],
-        error: err => console.error('Son aktiviteler alınamadı', err)
-      });
+  loadRecentActivities(): Promise<any> {
+    return firstValueFrom(
+      this.http.get<any>(`${API_URL}/auditlogs/recent`)
+        .pipe(takeUntil(this.destroy$))
+    )
+    .then(res => {
+      this.stats.recentActivities = res.logs || [];
+      return res;
+    })
+    .catch(err => {
+      console.error('Son aktiviteler alınamadı', err);
+      throw err;
+    });
   }
   
   refreshActivities(): void {
-    this.loadRecentActivities();
+    this.loading = true;
+    this.loadRecentActivities()
+      .finally(() => {
+        this.loading = false;
+      });
   }
   
   logout(event?: Event): void {

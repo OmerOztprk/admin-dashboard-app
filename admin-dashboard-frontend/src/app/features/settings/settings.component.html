@@ -1,0 +1,127 @@
+<div class="container-fluid">
+  <h2>Sistem Ayarları</h2>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title">Genel Ayarlar</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="generalSettingsForm" (ngSubmit)="saveGeneralSettings()">
+            <div class="mb-3">
+              <label for="siteName" class="form-label">Site Adı</label>
+              <input type="text" class="form-control" id="siteName" formControlName="siteName">
+            </div>
+            
+            <div class="mb-3">
+              <label for="siteDescription" class="form-label">Site Açıklaması</label>
+              <textarea class="form-control" id="siteDescription" formControlName="siteDescription" rows="3"></textarea>
+            </div>
+            
+            <div class="mb-3">
+              <label for="contactEmail" class="form-label">İletişim Email</label>
+              <input type="email" class="form-control" id="contactEmail" formControlName="contactEmail">
+              <div *ngIf="generalSettingsForm.get('contactEmail')?.invalid && generalSettingsForm.get('contactEmail')?.touched" class="text-danger">
+                Geçerli bir email adresi giriniz
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="maxItemsPerPage" class="form-label">Sayfa Başına Öğe Sayısı</label>
+              <input type="number" class="form-control" id="maxItemsPerPage" formControlName="maxItemsPerPage" min="5" max="100">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" [disabled]="savingGeneralSettings || generalSettingsForm.invalid">
+              <span *ngIf="savingGeneralSettings" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ savingGeneralSettings ? 'Kaydediliyor...' : 'Kaydet' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="card-title">Güvenlik Ayarları</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="securitySettingsForm" (ngSubmit)="saveSecuritySettings()">
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="twoFactorAuth" formControlName="twoFactorAuth">
+                <label class="form-check-label" for="twoFactorAuth">İki Faktörlü Kimlik Doğrulama</label>
+              </div>
+              <small class="form-text text-muted">Kullanıcılar için iki faktörlü kimlik doğrulamayı etkinleştirin</small>
+            </div>
+            
+            <div class="mb-3">
+              <label for="sessionTimeout" class="form-label">Oturum Zaman Aşımı (dakika)</label>
+              <input type="number" class="form-control" id="sessionTimeout" formControlName="sessionTimeout" min="5">
+            </div>
+            
+            <div class="mb-3">
+              <label for="passwordPolicy" class="form-label">Şifre Politikası</label>
+              <select class="form-select" id="passwordPolicy" formControlName="passwordPolicy">
+                <option value="low">Düşük (minimum 6 karakter)</option>
+                <option value="medium">Orta (minimum 8 karakter, rakam içermeli)</option>
+                <option value="high">Yüksek (minimum 10 karakter, rakam ve özel karakter içermeli)</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" [disabled]="savingSecuritySettings || securitySettingsForm.invalid">
+              <span *ngIf="savingSecuritySettings" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ savingSecuritySettings ? 'Kaydediliyor...' : 'Kaydet' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">Bildirim Ayarları</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="notificationSettingsForm" (ngSubmit)="saveNotificationSettings()">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="emailNotifications" formControlName="emailNotifications">
+                    <label class="form-check-label" for="emailNotifications">Email Bildirimleri</label>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="smsNotifications" formControlName="smsNotifications">
+                    <label class="form-check-label" for="smsNotifications">SMS Bildirimleri</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="browserNotifications" formControlName="browserNotifications">
+                    <label class="form-check-label" for="browserNotifications">Tarayıcı Bildirimleri</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" [disabled]="savingNotificationSettings || notificationSettingsForm.invalid">
+              <span *ngIf="savingNotificationSettings" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ savingNotificationSettings ? 'Kaydediliyor...' : 'Kaydet' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
