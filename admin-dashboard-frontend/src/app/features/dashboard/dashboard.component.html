@@ -1,7 +1,7 @@
 <div class="dashboard">
   <div class="dashboard-header">
     <h1>Dashboard</h1>
-    <p>Hoş geldiniz, {{ currentUser?.fullName || currentUser?.username || 'Kullanıcı' }}</p>
+    <p>Hoş geldiniz, {{ currentUser?.first_name + ' ' + currentUser?.last_name || currentUser?.email }}</p>
   </div>
   
   <!-- İstatistik Kartları -->

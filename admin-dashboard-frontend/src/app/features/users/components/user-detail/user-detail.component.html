@@ -1,1 +1,18 @@
-<p>user-detail works!</p>
+<div class="user-detail" *ngIf="!isLoading && user">
+    <h2>{{ user.first_name || user.email }}</h2>
+    <ul>
+      <li><strong>Email:</strong> {{ user.email }}</li>
+      <li><strong>Ad Soyad:</strong> {{ user.first_name }} {{ user.last_name }}</li>
+      <li><strong>Telefon:</strong> {{ user.phone_number || 'Belirtilmemiş' }}</li>
+      <li><strong>Durum:</strong> {{ user.is_active ? 'Aktif' : 'Pasif' }}</li>
+      <li><strong>Roller:</strong> {{ user.roles.length ? user.roles.join(', ') : 'Yok' }}</li>
+      <li><strong>Oluşturulma:</strong> {{ user.created_at | date:'medium' }}</li>
+      <li><strong>Güncellenme:</strong> {{ user.updated_at | date:'medium' }}</li>
+    </ul>
+  
+    <button (click)="goBack()">Geri Dön</button>
+  </div>
+  
+  <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
