@@ -1,0 +1,42 @@
+/* filepath: c:\Users\MSI\Desktop\projects\admin-dashboard-app\admin-dashboard-frontend\src\app\core\layout\admin-layout\admin-layout.component.scss */
+.admin-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  
+    &.sidebar-collapsed {
+      .main-content {
+        margin-left: 70px; // Collapsed sidebar width
+      }
+    }
+  
+    .main-content {
+      flex: 1;
+      margin-left: 250px; // Expanded sidebar width
+      transition: margin-left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+  
+    .content-area {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .admin-layout {
+      .main-content {
+        margin-left: 0;
+      }
+  
+      &.sidebar-collapsed {
+        .main-content {
+          margin-left: 0;
+        }
+      }
+    }
+  }

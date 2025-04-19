@@ -1,0 +1,89 @@
+.user-form {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 32px;
+    background-color: #fdfdfd;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 32px;
+      font-size: 26px;
+      font-weight: 600;
+      color: #2f2f2f;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+  
+      div {
+        display: flex;
+        flex-direction: column;
+      }
+  
+      label {
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #444;
+        font-size: 15px;
+      }
+  
+      input,
+      select {
+        padding: 12px 14px;
+        border: 1px solid #d0d0d0;
+        border-radius: 8px;
+        font-size: 15px;
+        background-color: #fff;
+        transition: all 0.2s ease;
+  
+        &:focus {
+          border-color: #4e73df;
+          box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+          outline: none;
+        }
+      }
+  
+      select[multiple] {
+        min-height: 120px;
+      }
+  
+      input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+      }
+  
+      .error {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 4px;
+      }
+  
+      button[type='submit'] {
+        padding: 14px;
+        background: linear-gradient(to right, #4e73df, #375ac2);
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+        }
+  
+        &:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+  

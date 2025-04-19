@@ -1,0 +1,47 @@
+/* filepath: c:\Users\MSI\Desktop\projects\admin-dashboard-app\admin-dashboard-frontend\src\app\core\layout\footer\footer.component.scss */
+.app-footer {
+    background-color: #fff;
+    border-top: 1px solid #e3e6f0;
+    padding: 15px 20px;
+    color: #858796;
+    font-size: 0.8rem;
+  
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  
+      .copyright {
+        flex: 1;
+      }
+  
+      .footer-links {
+        a {
+          color: #4e73df;
+          text-decoration: none;
+          margin-left: 20px;
+  
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .app-footer {
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+  
+        .footer-links {
+          margin-top: 10px;
+  
+          a {
+            margin: 0 10px;
+          }
+        }
+      }
+    }
+  }

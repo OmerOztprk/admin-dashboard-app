@@ -6,12 +6,13 @@ export const permissionGuard = (permission: string): CanActivateFn => {
   return (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
-    
-    if (authService.hasPermission(permission)) {
-      return true;
+
+    const hasAccess = authService.hasPermission(permission);
+
+    if (!hasAccess) {
+      router.navigate(['/dashboard']);
     }
-    
-    router.navigate(['/dashboard']);
-    return false;
+
+    return hasAccess;
   };
 };

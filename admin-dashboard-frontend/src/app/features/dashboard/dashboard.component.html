@@ -1,46 +1,168 @@
-<div class="dashboard-container">
-    <header class="dashboard-header">
-      <h1>Admin Dashboard</h1>
-      <div class="user-info" *ngIf="currentUser">
-        <span class="user-name">{{ currentUser.fullName || currentUser.username }}</span>
-        <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
-      </div>
-    </header>
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Hoş geldiniz, {{ currentUser?.fullName || currentUser?.username || 'Kullanıcı' }}</p>
+  </div>
   
-    <div class="dashboard-content">
-      <div class="welcome-card">
-        <h2>Hoş Geldiniz!</h2>
-        <p *ngIf="currentUser">{{ currentUser.fullName || currentUser.username }}, admin paneline hoş geldiniz.</p>
-        <p>Bu panelden sistem yönetimi ve veri işlemleri yapabilirsiniz.</p>
+  <!-- İstatistik Kartları -->
+  <div class="stat-cards">
+    <div *ngFor="let stat of statCards" class="stat-card" [style.background]="stat.color" (click)="navigate(stat.link)">
+      <div class="stat-info">
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-title">{{ stat.title }}</div>
       </div>
+      <div class="stat-icon">
+        <i [class]="stat.icon"></i>
+      </div>
+    </div>
+  </div>
   
-      <div class="dashboard-stats">
-        <div class="stat-card">
-          <h3>Kullanıcılar</h3>
-          <p class="stat-value">0</p>
+  <!-- Dashboard Ana İçeriği -->
+  <div class="dashboard-content">
+    <div class="row">
+      <!-- Sol Sütun -->
+      <div class="col-lg-8">
+        <!-- Özet Grafik Kartı -->
+        <div class="card">
+          <div class="card-header">
+            <h5>Genel Bakış</h5>
+          </div>
+          <div class="card-body chart-container">
+            <!-- Burada Chart.js veya diğer kütüphanelerle grafik eklenebilir -->
+            <div class="placeholder-chart">
+              <p>Grafik Alanı</p>
+              <p class="note">Burada Chart.js veya benzeri kütüphaneler ile dinamik grafikler ekleyebilirsiniz.</p>
+            </div>
+          </div>
         </div>
-        <div class="stat-card">
-          <h3>Kategoriler</h3>
-          <p class="stat-value">0</p>
-        </div>
-        <div class="stat-card">
-          <h3>Ürünler</h3>
-          <p class="stat-value">0</p>
-        </div>
-        <div class="stat-card">
-          <h3>Siparişler</h3>
-          <p class="stat-value">0</p>
+        
+        <!-- Son Aktiviteler Kartı -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5>Son Aktiviteler</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>İşlem</th>
+                    <th>Kullanıcı</th>
+                    <th>Tarih</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let activity of recentActivities">
+                    <td>
+                      <div class="activity-item">
+                        <span class="activity-icon" [ngClass]="'activity-icon-' + activity.type">
+                          <i [class]="activity.type === 'user' ? 'bi-person' : (activity.type === 'product' ? 'bi-box' : 'bi-cart')"></i>
+                        </span>
+                        {{ activity.action }}
+                      </div>
+                    </td>
+                    <td>{{ activity.user }}</td>
+                    <td>{{ activity.date | date:'dd.MM.yyyy HH:mm' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-  
-      <div class="dashboard-actions">
-        <h3>Hızlı İşlemler</h3>
-        <div class="action-buttons">
-          <button class="action-btn">Kullanıcı Ekle</button>
-          <button class="action-btn">Kategori Ekle</button>
-          <button class="action-btn">Ürün Ekle</button>
-          <button class="action-btn">Rapor Oluştur</button>
+      
+      <!-- Sağ Sütun -->
+      <div class="col-lg-4">
+        <!-- Hızlı İstatistikler Kartı -->
+        <div class="card">
+          <div class="card-header">
+            <h5>Hızlı İstatistikler</h5>
+          </div>
+          <div class="card-body">
+            <div class="progress-stats">
+              <div class="stat-item">
+                <div class="stat-label">
+                  <span>Kullanıcı Doluluğu</span>
+                  <span>65%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" style="width: 65%"></div>
+                </div>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-label">
+                  <span>Depolama Alanı</span>
+                  <span>48%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" style="width: 48%"></div>
+                </div>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-label">
+                  <span>İşlem Yükü</span>
+                  <span>80%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" style="width: 80%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Hızlı İşlemler Kartı -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5>Hızlı İşlemler</h5>
+          </div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <button class="btn btn-primary" (click)="navigate('/dashboard/users/create')">
+                <i class="bi bi-person-plus"></i> Kullanıcı Ekle
+              </button>
+              <button class="btn btn-success" (click)="navigate('/dashboard/categories/create')">
+                <i class="bi bi-folder-plus"></i> Kategori Ekle
+              </button>
+              <button class="btn btn-info" (click)="navigate('/dashboard/products/create')">
+                <i class="bi bi-plus-square"></i> Ürün Ekle
+              </button>
+              <button class="btn btn-warning" (click)="navigate('/dashboard/reports')">
+                <i class="bi bi-file-earmark-text"></i> Rapor Oluştur
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Son Güncellemeler Kartı -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5>Sistem Durumu</h5>
+          </div>
+          <div class="card-body">
+            <ul class="system-status">
+              <li class="status-item">
+                <span class="status-label">Sunucu Durumu</span>
+                <span class="status-value online">Çalışıyor</span>
+              </li>
+              <li class="status-item">
+                <span class="status-label">Veritabanı</span>
+                <span class="status-value online">Aktif</span>
+              </li>
+              <li class="status-item">
+                <span class="status-label">Son Yedekleme</span>
+                <span class="status-value">2 saat önce</span>
+              </li>
+              <li class="status-item">
+                <span class="status-label">API Durumu</span>
+                <span class="status-value online">Çalışıyor</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>

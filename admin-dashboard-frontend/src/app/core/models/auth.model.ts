@@ -22,6 +22,6 @@ export interface AuthResponse {
     roles?: string[];
   };
   token: string;
-  refreshToken: string;
+  refreshToken?: string;
   expiresIn?: number;
 }

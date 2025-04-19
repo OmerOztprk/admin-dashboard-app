@@ -1,0 +1,57 @@
+<div class="user-form">
+    <h2>{{ isEditMode ? 'Kullanıcıyı Düzenle' : 'Yeni Kullanıcı Ekle' }}</h2>
+  
+    <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div>
+        <label>Ad</label>
+        <input type="text" formControlName="first_name" />
+      </div>
+  
+      <div>
+        <label>Soyad</label>
+        <input type="text" formControlName="last_name" />
+      </div>
+  
+      <div>
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+      </div>
+  
+      <div>
+        <label>Telefon</label>
+        <input type="text" formControlName="phone_number" />
+      </div>
+  
+      <div *ngIf="!isEditMode">
+        <label>Şifre</label>
+        <input type="password" formControlName="password" />
+        <div *ngIf="form.controls['password'].invalid && form.controls['password'].touched" class="error">
+          Şifre en az 6 karakter olmalıdır.
+        </div>
+      </div>
+  
+      <div>
+        <label>
+          <input type="checkbox" formControlName="is_active" />
+          Aktif
+        </label>
+      </div>
+  
+      <div>
+        <label>Roller</label>
+        <select formControlName="roles" multiple>
+          <option *ngFor="let role of roles" [value]="role._id">
+            {{ role.role_name }}
+          </option>
+        </select>
+        <div *ngIf="form.controls['roles'].invalid && form.controls['roles'].touched" class="error">
+          En az bir rol seçmelisiniz.
+        </div>
+      </div>
+  
+      <button type="submit" [disabled]="form.invalid || form.pristine">
+        {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
+      </button>      
+    </form>
+  </div>
+  

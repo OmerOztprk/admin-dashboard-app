@@ -1,0 +1,145 @@
+/* filepath: c:\Users\MSI\Desktop\projects\admin-dashboard-app\admin-dashboard-frontend\src\app\core\layout\header\header.component.scss */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+  
+    .header-left {
+      display: flex;
+      align-items: center;
+  
+      .toggle-menu-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        margin-right: 20px;
+        cursor: pointer;
+        color: #5a5c69;
+      }
+  
+      .breadcrumb {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+  
+    .header-right {
+      display: flex;
+      align-items: center;
+  
+      .header-search {
+        position: relative;
+        margin-right: 20px;
+  
+        input {
+          padding: 8px 15px 8px 35px;
+          border: 1px solid #e3e6f0;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          width: 250px;
+          transition: all 0.2s;
+  
+          &:focus {
+            outline: none;
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+          }
+        }
+  
+        i {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #858796;
+        }
+      }
+  
+      .header-actions {
+        display: flex;
+        align-items: center;
+  
+        .notification-icon {
+          position: relative;
+          margin-right: 20px;
+          font-size: 1.2rem;
+          color: #5a5c69;
+          cursor: pointer;
+  
+          .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74a3b;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+  
+        .user-dropdown {
+          position: relative;
+  
+          .user-info {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+  
+            &:hover {
+              background-color: #f8f9fa;
+            }
+  
+            .avatar {
+              width: 35px;
+              height: 35px;
+              border-radius: 50%;
+              background-color: #4e73df;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 10px;
+              color: #fff;
+  
+              i {
+                font-size: 1.2rem;
+              }
+            }
+  
+            .username {
+              font-size: 0.9rem;
+              font-weight: 600;
+              margin-right: 5px;
+              color: #5a5c69;
+            }
+  
+            i {
+              color: #5a5c69;
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .app-header {
+      .header-search {
+        display: none;
+      }
+    }
+  }
