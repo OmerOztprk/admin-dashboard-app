@@ -1,36 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { 
-  ActivatedRouteSnapshot, 
-  RouterStateSnapshot, 
-  UrlTree 
-} from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthService } from '../../features/auth/services/auth.service';
+import { inject } from '@angular/core';
+import { Router, CanActivateFn } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard {
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
   
-  constructor(private authService: AuthService, private router: Router) {}
-  
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Kullanıcı giriş yapmışsa true döndür, yoksa login sayfasına yönlendir
-    if (this.authService.isAuthenticated()) {
-      return true;
-    }
-    
-    console.log('Yetkilendirme başarısız: Login sayfasına yönlendiriliyor');
-    
-    // Giriş yapılmamış, login sayfasına yönlendir
-    return this.router.createUrlTree(['/auth/login'], {
-      queryParams: {
-        returnUrl: state.url
-      }
-    });
+  if (authService.isAuthenticated()) {
+    return true;
   }
-}
+  
+  router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+  return false;
+};

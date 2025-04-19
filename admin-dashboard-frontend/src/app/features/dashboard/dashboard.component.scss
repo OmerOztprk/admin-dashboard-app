@@ -1,208 +1,166 @@
-// Ana tipografi ve navigasyon stilleri
-.navbar-brand {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.navbar {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  .nav-link {
-    position: relative;
-    font-weight: 500;
-    transition: all 0.2s ease;
-
-    &.active {
-      color: #0d6efd;
-    }
-
-    &.active::after {
-      content: '';
-      position: absolute;
-      left: 0.5rem;
-      right: 0.5rem;
-      bottom: 0;
-      height: 3px;
-      background-color: #0d6efd;
-      border-radius: 4px 4px 0 0;
-    }
-  }
-}
-
-// Kart stilleri
-.card {
-  border: none;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    transform: translateY(-3px);
-  }
-
-  .card-header {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-  }
-  
-  .card-footer {
-    background-color: rgba(0,0,0,0.03);
-    border-top: 1px solid rgba(0,0,0,0.08);
-  }
-}
-
-// İstatistik kartları için özel stiller
-.bg-primary, .bg-success, .bg-info {
-  .card-title {
-    opacity: 0.9;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-  }
-  
-  i {
-    opacity: 0.8;
-    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
-  }
-
-  .card-footer {
-    background-color: rgba(0,0,0,0.1);
-    border-top: 1px solid rgba(255,255,255,0.1);
-
-    a {
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.2s ease;
-
-      i {
-        transition: transform 0.2s;
+/* filepath: c:\Users\MSI\Desktop\projects\admin-dashboard-app\admin-dashboard-frontend\src\app\features\dashboard\dashboard.component.scss */
+.dashboard-container {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      
+      h1 {
+        margin: 0;
+        color: #333;
+        font-size: 1.5rem;
       }
-
-      &:hover {
-        opacity: 0.9;
-
-        i {
-          transform: translateX(4px);
+      
+      .user-info {
+        display: flex;
+        align-items: center;
+        
+        .user-name {
+          margin-right: 1rem;
+          font-weight: 500;
+        }
+        
+        .logout-btn {
+          padding: 0.5rem 1rem;
+          background-color: #f44336;
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          
+          &:hover {
+            background-color: #e53935;
+          }
+        }
+      }
+    }
+    
+    .dashboard-content {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      
+      .welcome-card {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        
+        h2 {
+          margin-top: 0;
+          color: #333;
+        }
+        
+        p {
+          color: #666;
+          margin-bottom: 0;
+          
+          &:not(:last-child) {
+            margin-bottom: 0.75rem;
+          }
+        }
+      }
+      
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        
+        .stat-card {
+          background-color: #fff;
+          padding: 1.5rem;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          
+          h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            color: #555;
+            font-size: 1.1rem;
+          }
+          
+          .stat-value {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4a90e2;
+          }
+        }
+      }
+      
+      .dashboard-actions {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+        h3 {
+          margin-top: 0;
+          color: #333;
+          margin-bottom: 1rem;
+        }
+        
+        .action-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          
+          .action-btn {
+            padding: 0.75rem 1rem;
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            
+            &:hover {
+              background-color: #3a80d2;
+            }
+          }
         }
       }
     }
   }
-}
-
-// Tablo stilleri
-.table-responsive {
-  min-height: 250px;
-
-  .table {
-    th {
-      font-weight: 600;
-      color: #495057;
-      border-bottom-width: 1px;
-    }
-    
-    td {
-      vertical-align: middle;
-    }
-    
-    tr:hover {
-      background-color: rgba(13, 110, 253, 0.04);
-    }
-  }
-}
-
-// Liste grup öğeleri
-.list-group-item {
-  border-left: none;
-  border-right: none;
-  padding: 0.75rem 1rem;
-  transition: all 0.2s ease;
   
-  &:first-child {
-    border-top: none;
-  }
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  i {
-    transition: transform 0.2s;
-    color: #6c757d;
-  }
-  
-  &:hover {
-    background-color: #f8f9fa;
-    
-    i {
-      transform: translateX(5px);
-      color: #0d6efd;
-    }
-  }
-}
-
-// Yan menü için özel stiller
-.list-group.shadow-sm {
-  .list-group-item {
-    &.active {
-      background-color: #0d6efd;
-      border-color: #0d6efd;
+  @media (max-width: 768px) {
+    .dashboard-container {
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        
+        .user-info {
+          margin-top: 0.5rem;
+        }
+      }
       
-      i {
-        color: white;
+      .dashboard-content {
+        padding: 1rem;
+        
+        .dashboard-stats {
+          grid-template-columns: 1fr;
+        }
+        
+        .dashboard-actions {
+          .action-buttons {
+            flex-direction: column;
+            
+            .action-btn {
+              width: 100%;
+            }
+          }
+        }
       }
     }
   }
-}
-
-// Yükleme göstergeleri için stiller
-.spinner-border {
-  width: 1.2rem;
-  height: 1.2rem;
-  border-width: 0.15em;
-}
-
-// Responsive düzenlemeler
-@media (max-width: 768px) {
-  .card {
-    margin-bottom: 1rem;
-  }
-  
-  h2 {
-    font-size: 1.75rem;
-  }
-}
-
-// Özelleştirilmiş buton stilleri
-.btn-outline-secondary {
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: #6c757d;
-    color: white;
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-  }
-}
-
-// Dropdown menü için özel stiller
-.dropdown-menu {
-  border: none;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  
-  .dropdown-item {
-    padding: 0.5rem 1.5rem;
-    transition: all 0.15s ease;
-    
-    &:hover {
-      background-color: #f8f9fa;
-    }
-    
-    &.text-danger:hover {
-      background-color: #f8d7da;
-    }
-  }
-}

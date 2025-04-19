@@ -1,0 +1,54 @@
+<div class="login-container">
+    <div class="login-card">
+      <h2 class="login-title">Giriş Yap</h2>
+      
+      <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-control"
+            [ngClass]="{'is-invalid': f['email'].touched && f['email'].errors}"
+          />
+          <div *ngIf="f['email'].touched && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">Email gerekli</div>
+            <div *ngIf="f['email'].errors['email']">Geçerli bir email adresi girin</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Şifre</label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            class="form-control"
+            [ngClass]="{'is-invalid': f['password'].touched && f['password'].errors}"
+          />
+          <div *ngIf="f['password'].touched && f['password'].errors" class="invalid-feedback">
+            <div *ngIf="f['password'].errors['required']">Şifre gerekli</div>
+          </div>
+        </div>
+        
+        <div class="form-group remember-me">
+          <input type="checkbox" id="rememberMe" formControlName="rememberMe" />
+          <label for="rememberMe">Beni hatırla</label>
+        </div>
+        
+        <div class="form-group">
+          <button type="submit" [disabled]="loginForm.invalid || loading" class="btn btn-primary btn-block">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Giriş Yap
+          </button>
+        </div>
+        
+        <div class="form-group text-center">
+          <p>Hesabınız yok mu? <a routerLink="/auth/register">Kayıt Ol</a></p>
+        </div>
+      </form>
+    </div>
+  </div>

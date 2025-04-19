@@ -1,43 +1,27 @@
-import { User } from './user.model';
-
 export interface LoginRequest {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export interface RegisterRequest {
   email: string;
+  username?: string;
   password: string;
-  first_name?: string;
-  last_name?: string;
-  phone_number?: string;
+  first_name?: string;  // Backend'e uygun alan adları
+  last_name?: string;   // Backend'e uygun alan adları
+  fullName?: string;    // Frontend'de kullanım için
 }
 
 export interface AuthResponse {
+  user: {
+    id: string;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    roles?: string[];
+  };
   token: string;
-  user: User;
-}
-
-export interface TokenPayload {
-  sub: string; // user id
-  email: string;
-  roles: string[];
-  permissions?: string[];
-  iat: number; // issued at
-  exp: number; // expiration time
-}
-
-export interface RefreshTokenResponse {
-  token: string;
-  user?: User;
-}
-
-export interface ForgotPasswordRequest {
-  email: string;
-}
-
-export interface ResetPasswordRequest {
-  token: string;
-  password: string;
-  confirmPassword: string;
+  refreshToken: string;
+  expiresIn?: number;
 }

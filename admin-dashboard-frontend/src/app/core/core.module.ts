@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
 
 @NgModule({
   declarations: [],
@@ -8,6 +10,15 @@ import { HttpClientModule } from '@angular/common/http';
     CommonModule,
     HttpClientModule
   ],
-  providers: []  // HTTP_INTERCEPTORS kaydını kaldırdık
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ]
 })
-export class CoreModule { }
+export class CoreModule {
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+    if (parentModule) {
+      throw new Error('CoreModule is already loaded. Import it in the AppModule only');
+    }
+  }
+}
