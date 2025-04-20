@@ -1,12 +1,17 @@
 <div class="dashboard">
   <div class="dashboard-header">
     <h1>Dashboard</h1>
-    <p>Hoş geldiniz, {{ currentUser?.first_name + ' ' + currentUser?.last_name || currentUser?.email }}</p>
+    <p>Hoş geldiniz, {{ fullName }}</p>
   </div>
-  
+
   <!-- İstatistik Kartları -->
   <div class="stat-cards">
-    <div *ngFor="let stat of statCards" class="stat-card" [style.background]="stat.color" (click)="navigate(stat.link)">
+    <div
+      *ngFor="let stat of statCards"
+      class="stat-card"
+      [style.background]="stat.color"
+      (click)="navigate(stat.link)"
+    >
       <div class="stat-info">
         <div class="stat-value">{{ stat.value }}</div>
         <div class="stat-title">{{ stat.title }}</div>
@@ -16,31 +21,26 @@
       </div>
     </div>
   </div>
-  
-  <!-- Dashboard Ana İçeriği -->
+
+  <!-- Dashboard İçeriği -->
   <div class="dashboard-content">
     <div class="row">
-      <!-- Sol Sütun -->
+      <!-- Sol -->
       <div class="col-lg-8">
-        <!-- Özet Grafik Kartı -->
+        <!-- Grafik -->
         <div class="card">
-          <div class="card-header">
-            <h5>Genel Bakış</h5>
-          </div>
+          <div class="card-header"><h5>Genel Bakış</h5></div>
           <div class="card-body chart-container">
-            <!-- Burada Chart.js veya diğer kütüphanelerle grafik eklenebilir -->
             <div class="placeholder-chart">
               <p>Grafik Alanı</p>
-              <p class="note">Burada Chart.js veya benzeri kütüphaneler ile dinamik grafikler ekleyebilirsiniz.</p>
+              <p class="note">Chart.js ile grafik yerleştirilebilir.</p>
             </div>
           </div>
         </div>
-        
-        <!-- Son Aktiviteler Kartı -->
+
+        <!-- Aktiviteler -->
         <div class="card mt-4">
-          <div class="card-header">
-            <h5>Son Aktiviteler</h5>
-          </div>
+          <div class="card-header"><h5>Son Aktiviteler</h5></div>
           <div class="card-body">
             <div class="table-responsive">
               <table class="table">
@@ -55,14 +55,25 @@
                   <tr *ngFor="let activity of recentActivities">
                     <td>
                       <div class="activity-item">
-                        <span class="activity-icon" [ngClass]="'activity-icon-' + activity.type">
-                          <i [class]="activity.type === 'user' ? 'bi-person' : (activity.type === 'product' ? 'bi-box' : 'bi-cart')"></i>
+                        <span
+                          class="activity-icon"
+                          [ngClass]="'activity-icon-' + activity.type"
+                        >
+                          <i
+                            [class]="
+                              activity.type === 'user'
+                                ? 'bi-person'
+                                : activity.type === 'product'
+                                ? 'bi-box'
+                                : 'bi-cart'
+                            "
+                          ></i>
                         </span>
                         {{ activity.action }}
                       </div>
                     </td>
                     <td>{{ activity.user }}</td>
-                    <td>{{ activity.date | date:'dd.MM.yyyy HH:mm' }}</td>
+                    <td>{{ activity.date | date: 'dd.MM.yyyy HH:mm' }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -70,14 +81,12 @@
           </div>
         </div>
       </div>
-      
-      <!-- Sağ Sütun -->
+
+      <!-- Sağ -->
       <div class="col-lg-4">
-        <!-- Hızlı İstatistikler Kartı -->
+        <!-- Hızlı İstatistikler -->
         <div class="card">
-          <div class="card-header">
-            <h5>Hızlı İstatistikler</h5>
-          </div>
+          <div class="card-header"><h5>Hızlı İstatistikler</h5></div>
           <div class="card-body">
             <div class="progress-stats">
               <div class="stat-item">
@@ -89,7 +98,6 @@
                   <div class="progress-bar" style="width: 65%"></div>
                 </div>
               </div>
-              
               <div class="stat-item">
                 <div class="stat-label">
                   <span>Depolama Alanı</span>
@@ -99,7 +107,6 @@
                   <div class="progress-bar" style="width: 48%"></div>
                 </div>
               </div>
-              
               <div class="stat-item">
                 <div class="stat-label">
                   <span>İşlem Yükü</span>
@@ -112,35 +119,43 @@
             </div>
           </div>
         </div>
-        
-        <!-- Hızlı İşlemler Kartı -->
+
+        <!-- Hızlı İşlemler -->
         <div class="card mt-4">
-          <div class="card-header">
-            <h5>Hızlı İşlemler</h5>
-          </div>
+          <div class="card-header"><h5>Hızlı İşlemler</h5></div>
           <div class="card-body">
             <div class="quick-actions">
-              <button class="btn btn-primary" (click)="navigate('/dashboard/users/create')">
+              <button
+                class="btn btn-primary"
+                (click)="navigate('/dashboard/users/create')"
+              >
                 <i class="bi bi-person-plus"></i> Kullanıcı Ekle
               </button>
-              <button class="btn btn-success" (click)="navigate('/dashboard/categories/create')">
+              <button
+                class="btn btn-success"
+                (click)="navigate('/dashboard/categories/create')"
+              >
                 <i class="bi bi-folder-plus"></i> Kategori Ekle
               </button>
-              <button class="btn btn-info" (click)="navigate('/dashboard/products/create')">
+              <button
+                class="btn btn-info"
+                (click)="navigate('/dashboard/products/create')"
+              >
                 <i class="bi bi-plus-square"></i> Ürün Ekle
               </button>
-              <button class="btn btn-warning" (click)="navigate('/dashboard/reports')">
+              <button
+                class="btn btn-warning"
+                (click)="navigate('/dashboard/reports')"
+              >
                 <i class="bi bi-file-earmark-text"></i> Rapor Oluştur
               </button>
             </div>
           </div>
         </div>
-        
-        <!-- Son Güncellemeler Kartı -->
+
+        <!-- Sistem Durumu -->
         <div class="card mt-4">
-          <div class="card-header">
-            <h5>Sistem Durumu</h5>
-          </div>
+          <div class="card-header"><h5>Sistem Durumu</h5></div>
           <div class="card-body">
             <ul class="system-status">
               <li class="status-item">

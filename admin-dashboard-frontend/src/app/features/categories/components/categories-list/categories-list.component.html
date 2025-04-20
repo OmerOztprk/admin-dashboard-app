@@ -1,0 +1,42 @@
+<div class="categories-list">
+    <div class="header">
+      <h2>Kategori Listesi</h2>
+      <button class="btn-add" (click)="createCategory()">
+        <i class="bi bi-plus-circle"></i> Yeni Kategori
+      </button>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
+    <table class="table" *ngIf="!isLoading && categories.length > 0">
+      <thead>
+        <tr>
+          <th>Ad</th>
+          <th>Durum</th>
+          <th>Oluşturulma</th>
+          <th>Güncellenme</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of categories">
+          <td>{{ category.name }}</td>
+          <td>
+            <span [class.active]="category.is_active" [class.inactive]="!category.is_active">
+              {{ category.is_active ? 'Aktif' : 'Pasif' }}
+            </span>
+          </td>
+          <td>{{ category.created_at | date:'medium' }}</td>
+          <td>{{ category.updated_at | date:'medium' }}</td>
+          <td>
+            <button (click)="editCategory(category)">Düzenle</button>
+            <button (click)="deleteCategory(category)">Sil</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="!isLoading && categories.length === 0" class="empty">Kategori bulunamadı.</div>
+  </div>
+  

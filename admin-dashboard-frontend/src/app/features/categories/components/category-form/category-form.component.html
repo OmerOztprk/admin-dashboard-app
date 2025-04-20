@@ -1,0 +1,25 @@
+<div class="category-form">
+    <h2>{{ isEditMode ? 'Kategori Düzenle' : 'Yeni Kategori Ekle' }}</h2>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Kategori Adı</label>
+        <input id="name" type="text" formControlName="name" />
+        <div class="error" *ngIf="form.controls['name'].invalid && form.controls['name'].touched">
+          Kategori adı zorunludur.
+        </div>
+      </div>
+  
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" formControlName="is_active" />
+          Aktif
+        </label>
+      </div>
+  
+      <button type="submit" [disabled]="form.invalid">
+        {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
+      </button>
+    </form>
+  </div>
+  

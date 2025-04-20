@@ -54,3 +54,13 @@ exports.importFromExcel = async (req, res) => {
     res.status(err.code || 500).json(Response.error(err));
   }
 };
+
+exports.getById = async (req, res) => {
+  try {
+    const category = await CategoryService.getById(req.params.id);
+    res.status(200).json(Response.success(category));
+  } catch (err) {
+    console.error("Kategori getirilemedi:", err);
+    res.status(err.code || 500).json(Response.error(err));
+  }
+};

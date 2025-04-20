@@ -13,13 +13,17 @@ exports.getAll = async () => {
 
 exports.add = async (body, user) => {
   if (!body.name) {
-    throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Geçersiz istek", "Kategori adı zorunludur.");
+    throw new CustomError(
+      Enum.HTTP_CODES.BAD_REQUEST,
+      "Geçersiz istek",
+      "Kategori adı zorunludur."
+    );
   }
 
   const category = await Categories.create({
     name: body.name,
     is_active: true,
-    created_by: user.id
+    created_by: user.id,
   });
 
   AuditLogs.info(user.email, "Categories", "Add", category);
@@ -28,7 +32,11 @@ exports.add = async (body, user) => {
 
 exports.update = async (body, user) => {
   if (!body._id) {
-    throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Geçersiz istek", "_id zorunludur.");
+    throw new CustomError(
+      Enum.HTTP_CODES.BAD_REQUEST,
+      "Geçersiz istek",
+      "_id zorunludur."
+    );
   }
 
   const updates = {};
@@ -37,13 +45,20 @@ exports.update = async (body, user) => {
 
   await Categories.updateOne({ _id: body._id }, updates);
 
-  AuditLogs.info(user.email, "Categories", "Update", { _id: body._id, ...updates });
+  AuditLogs.info(user.email, "Categories", "Update", {
+    _id: body._id,
+    ...updates,
+  });
   return { success: true };
 };
 
 exports.remove = async (_id, user) => {
   if (!_id) {
-    throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Geçersiz istek", "_id zorunludur.");
+    throw new CustomError(
+      Enum.HTTP_CODES.BAD_REQUEST,
+      "Geçersiz istek",
+      "_id zorunludur."
+    );
   }
 
   await Categories.deleteOne({ _id });
@@ -60,7 +75,12 @@ exports.exportExcel = async () => {
     categories
   );
 
-  const filePath = path.join(__dirname, "..", "uploads", `categories_export_${Date.now()}.xlsx`);
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "uploads",
+    `categories_export_${Date.now()}.xlsx`
+  );
   fs.writeFileSync(filePath, excelBuffer);
   return filePath;
 };
@@ -74,10 +94,22 @@ exports.importExcel = async (filePath, user) => {
       await Categories.create({
         name,
         is_active: is_active === true || is_active === "true",
-        created_by: user.id
+        created_by: user.id,
       });
     }
   }
 
   return { success: true };
+};
+
+exports.getById = async (id) => {
+  const category = await Categories.findById(id).lean();
+  if (!category) {
+    throw new CustomError(
+      Enum.HTTP_CODES.NOT_FOUND,
+      "Kategori bulunamadı",
+      "Belirtilen ID'ye sahip kategori yok."
+    );
+  }
+  return category;
 };

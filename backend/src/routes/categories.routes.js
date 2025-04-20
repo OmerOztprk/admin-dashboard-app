@@ -12,5 +12,6 @@ router.post("/update", auth.checkRoles("category_update"), categoryController.up
 router.post("/delete", auth.checkRoles("category_delete"), categoryController.remove);
 router.post("/export", auth.checkRoles("category_export"), categoryController.exportToExcel);
 router.post("/import", upload.single("pb_file"), categoryController.importFromExcel);
+router.get('/:id', auth.checkRoles("category_view"), categoryController.getById);
 
 module.exports = router;

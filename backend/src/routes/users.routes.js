@@ -42,16 +42,8 @@ router.get("/profile", async (req, res) => {
 // Diğer yetkili işlemler
 router.get("/", auth.checkRoles("user_view"), userController.getAllUsers);
 router.post("/add", auth.checkRoles("user_add"), userController.addUser);
-router.post(
-  "/update",
-  auth.checkRoles("user_update"),
-  userController.updateUser
-);
-router.post(
-  "/delete",
-  auth.checkRoles("user_delete"),
-  userController.deleteUser
-);
-router.get("/:id", auth.checkRoles("user_view"), userController.getById); // bu satırı en sonlara yaz
+router.post("/update", auth.checkRoles("user_update"), userController.updateUser);
+router.post("/delete", auth.checkRoles("user_delete"), userController.deleteUser);
+router.get("/:id", auth.checkRoles("user_view"), userController.getById); 
 
 module.exports = router;

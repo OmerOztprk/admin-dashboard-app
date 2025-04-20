@@ -29,8 +29,8 @@ export class DashboardComponent implements OnInit {
 
   statCards = [
     { title: 'Kullanıcılar', value: 0, icon: 'bi-people', color: '#4e73df', link: '/dashboard/users' },
-    { title: 'Roller', value: 0, icon: 'bi-grid', color: '#1cc88a', link: '/dashboard/categories' },
-    { title: 'Kategoriler', value: 0, icon: 'bi-box', color: '#36b9cc', link: '/dashboard/products' },
+    { title: 'Roller', value: 0, icon: 'bi-grid', color: '#1cc88a', link: '/dashboard/roles' },
+    { title: 'Kategoriler', value: 0, icon: 'bi-box', color: '#36b9cc', link: '/dashboard/categories' },
     { title: 'Müşteriler', value: 0, icon: 'bi-cart', color: '#f6c23e', link: '/dashboard/orders' }
   ];
 
@@ -40,7 +40,9 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => this.currentUser = user);
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
     this.loadDashboardData();
   }
 
@@ -62,5 +64,11 @@ export class DashboardComponent implements OnInit {
 
   navigate(path: string): void {
     this.router.navigate([path]);
+  }
+
+  get fullName(): string {
+    if (!this.currentUser) return 'Kullanıcı';
+    const { first_name, last_name, email } = this.currentUser;
+    return first_name && last_name ? `${first_name} ${last_name}` : email ?? 'Kullanıcı';
   }
 }
