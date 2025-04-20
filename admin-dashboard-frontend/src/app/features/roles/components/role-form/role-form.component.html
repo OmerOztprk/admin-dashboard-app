@@ -1,0 +1,43 @@
+<div class="role-form">
+    <h2>{{ isEditMode ? 'Rolü Güncelle' : 'Yeni Rol Ekle' }}</h2>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="role_name">Rol Adı</label>
+        <input id="role_name" type="text" formControlName="role_name" />
+        <div class="error" *ngIf="form.controls['role_name'].invalid && form.controls['role_name'].touched">
+          Rol adı zorunludur.
+        </div>
+      </div>
+  
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" formControlName="is_active" />
+          Aktif
+        </label>
+      </div>
+  
+      <div class="permissions">
+        <h4>Yetkiler</h4>
+        <div *ngFor="let group of groupedPrivileges" class="permission-group">
+          <h5>{{ group.groupName }}</h5>
+          <div *ngFor="let perm of group.permissions">
+            <label>
+              <input
+                type="checkbox"
+                [value]="perm.key"
+                (change)="togglePermission(perm.key)"
+                [checked]="form.value.permissions?.includes(perm.key)"
+              />
+              {{ perm.name }}
+            </label>
+          </div>
+        </div>
+      </div>
+  
+      <button type="submit" [disabled]="form.invalid">
+        {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
+      </button>
+    </form>
+  </div>
+  

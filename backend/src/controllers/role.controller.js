@@ -41,3 +41,15 @@ exports.getPrivileges = (req, res) => {
   const privileges = require("../config/role_privileges");
   res.json(Response.success(privileges));
 };
+
+exports.getById = async (req, res) => {
+  try {
+    const result = await RoleService.getById(req.params.id);
+    if (!result) {
+      return res.status(404).json(Response.error("Rol bulunamadı"));
+    }
+    res.json(Response.success(result));
+  } catch (err) {
+    res.status(err.code || 500).json(Response.error(err));
+  }
+};

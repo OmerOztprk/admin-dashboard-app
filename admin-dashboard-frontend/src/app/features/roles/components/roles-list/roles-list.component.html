@@ -1,0 +1,38 @@
+<div class="roles-list">
+    <div class="header">
+      <h2>Roller</h2>
+      <button class="btn-add" (click)="createRole()">
+        <i class="bi bi-plus-circle"></i> Yeni Rol
+      </button>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
+    <table class="role-table" *ngIf="!isLoading && roles.length">
+      <thead>
+        <tr>
+          <th>Rol Adı</th>
+          <th>Durum</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of roles">
+          <td>{{ role.role_name }}</td>
+          <td>
+            <span [class.active]="role.is_active" [class.inactive]="!role.is_active">
+              {{ role.is_active ? 'Aktif' : 'Pasif' }}
+            </span>
+          </td>
+          <td>
+            <button (click)="editRole(role)">Düzenle</button>
+            <button (click)="deleteRole(role)">Sil</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="!isLoading && roles.length === 0" class="empty">Rol bulunamadı.</div>
+  </div>
+  
