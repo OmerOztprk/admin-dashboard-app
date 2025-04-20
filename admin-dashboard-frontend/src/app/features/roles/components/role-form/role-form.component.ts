@@ -6,11 +6,12 @@ import { RoleService } from '../../../../core/services/role.service';
 import { ApiResponse } from '../../../../core/models/api-response.model';
 import { Role } from '../../../../core/models/role.model';
 import { GroupedPrivilege, PrivilegeGroup, Privilege } from '../../../../core/models/role-privilege.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-role-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule],
     templateUrl: './role-form.component.html',
     styleUrls: ['./role-form.component.scss']
 })

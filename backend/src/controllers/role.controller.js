@@ -1,5 +1,6 @@
 const RoleService = require("../services/role.service");
 const Response = require("../utils/Response");
+const UserRoles = require("../models/UserRoles"); // 🔧 Eksik import eklendi
 
 exports.getAll = async (req, res) => {
   try {
@@ -38,8 +39,12 @@ exports.remove = async (req, res) => {
 };
 
 exports.getPrivileges = (req, res) => {
-  const privileges = require("../config/role_privileges");
-  res.json(Response.success(privileges));
+  try {
+    const privileges = require("../config/role_privileges");
+    res.json(Response.success(privileges));
+  } catch (err) {
+    res.status(500).json(Response.error(err));
+  }
 };
 
 exports.getById = async (req, res) => {
@@ -51,5 +56,16 @@ exports.getById = async (req, res) => {
     res.json(Response.success(result));
   } catch (err) {
     res.status(err.code || 500).json(Response.error(err));
+  }
+};
+
+exports.getRoleUsage = async (req, res) => {
+  try {
+    const roleId = req.params.id;
+    const usage = await UserRoles.find({ role_id: roleId });
+    res.json(Response.success(usage));
+  } catch (err) {
+    console.error("❌ Kullanım kontrol hatası:", err);
+    res.status(500).json(Response.error("Rol kullanım durumu alınamadı"));
   }
 };

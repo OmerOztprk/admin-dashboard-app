@@ -1,10 +1,17 @@
 <div class="admin-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <div class="layout-overlay" [class.active]="isSidebarCollapsed" (click)="toggleSidebar()"></div>
+  
   <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>
+  
   <div class="main-content">
     <app-header (toggleSidebarEvent)="toggleSidebar()"></app-header>
+    
     <main class="content-area">
-      <router-outlet></router-outlet>
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
     </main>
+    
     <app-footer></app-footer>
   </div>
 </div>

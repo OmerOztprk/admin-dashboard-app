@@ -1,43 +1,74 @@
 <div class="role-form">
-    <h2>{{ isEditMode ? 'Rolü Güncelle' : 'Yeni Rol Ekle' }}</h2>
-  
+  <div class="card">
+    <div class="header">
+      <h2>{{ isEditMode ? 'Rolü Güncelle' : 'Yeni Rol Ekle' }}</h2>
+      <button type="button" class="btn btn-outline" routerLink="/dashboard/roles">
+        <i class="bi bi-arrow-left"></i> Geri Dön
+      </button>
+    </div>
+
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="role_name">Rol Adı</label>
-        <input id="role_name" type="text" formControlName="role_name" />
-        <div class="error" *ngIf="form.controls['role_name'].invalid && form.controls['role_name'].touched">
-          Rol adı zorunludur.
-        </div>
-      </div>
-  
-      <div class="form-group checkbox">
-        <label>
-          <input type="checkbox" formControlName="is_active" />
-          Aktif
-        </label>
-      </div>
-  
-      <div class="permissions">
-        <h4>Yetkiler</h4>
-        <div *ngFor="let group of groupedPrivileges" class="permission-group">
-          <h5>{{ group.groupName }}</h5>
-          <div *ngFor="let perm of group.permissions">
-            <label>
-              <input
-                type="checkbox"
-                [value]="perm.key"
-                (change)="togglePermission(perm.key)"
-                [checked]="form.value.permissions?.includes(perm.key)"
-              />
-              {{ perm.name }}
+      <div class="form-content">
+        <div class="form-section basic-info">
+          <h4>Temel Bilgiler</h4>
+          
+          <div class="form-group">
+            <label for="role_name">Rol Adı</label>
+            <input 
+              id="role_name" 
+              type="text" 
+              formControlName="role_name"
+              placeholder="Rol adını girin"
+            />
+            <div class="error-message" *ngIf="form.controls['role_name'].invalid && form.controls['role_name'].touched">
+              <i class="bi bi-exclamation-circle"></i> Rol adı zorunludur.
+            </div>
+          </div>
+    
+          <div class="form-group switch">
+            <span class="switch-label">Durum</span>
+            <label class="toggle">
+              <input type="checkbox" formControlName="is_active" />
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">{{ form.value.is_active ? 'Aktif' : 'Pasif' }}</span>
             </label>
           </div>
         </div>
+
+        <div class="form-section permissions-section">
+          <h4>Yetkiler</h4>
+          
+          <div class="permissions-container">
+            <div *ngFor="let group of groupedPrivileges" class="permission-group">
+              <div class="group-header">
+                <h5>{{ group.groupName }}</h5>
+              </div>
+              
+              <div class="permission-items">
+                <div *ngFor="let perm of group.permissions" class="permission-item">
+                  <label class="checkbox">
+                    <input
+                      type="checkbox"
+                      [value]="perm.key"
+                      (change)="togglePermission(perm.key)"
+                      [checked]="form.value.permissions?.includes(perm.key)"
+                    />
+                    <span class="checkmark"></span>
+                    <span class="permission-text">{{ perm.name }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-  
-      <button type="submit" [disabled]="form.invalid">
-        {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
-      </button>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          <i class="bi" [ngClass]="isEditMode ? 'bi-check-lg' : 'bi-plus-lg'"></i>
+          {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
+        </button>
+      </div>
     </form>
   </div>
-  
+</div>

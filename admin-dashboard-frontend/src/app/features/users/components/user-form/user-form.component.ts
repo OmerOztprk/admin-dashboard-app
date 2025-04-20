@@ -6,11 +6,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { User } from '../../../../core/models/user.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
@@ -108,5 +109,16 @@ export class UserFormComponent implements OnInit {
       next: () => this.router.navigate(['/dashboard/users']),
       error: err => alert('Hata: ' + (err?.message || 'İşlem sırasında hata oluştu'))
     });
+  }
+
+  toggleRole(roleId: string): void {
+    const currentRoles = this.form.get('roles')?.value || [];
+    const updated = currentRoles.includes(roleId)
+      ? currentRoles.filter((id: string) => id !== roleId)
+      : [...currentRoles, roleId];
+
+    this.form.patchValue({ roles: updated });
+    this.form.get('roles')?.markAsDirty();
+    this.form.get('roles')?.markAsTouched();
   }
 }

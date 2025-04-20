@@ -1,7 +1,9 @@
 <div class="dashboard">
-  <div class="dashboard-header">
-    <h1>Dashboard</h1>
-    <p>Hoş geldiniz, {{ fullName }}</p>
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>Dashboard</h1>
+      <p>Hoş geldiniz, <span class="user-name">{{ fullName }}</span></p>
+    </div>
   </div>
 
   <!-- İstatistik Kartları -->
@@ -9,10 +11,10 @@
     <div
       *ngFor="let stat of statCards"
       class="stat-card"
-      [style.background]="stat.color"
+      [ngStyle]="{'--card-color': stat.color}"
       (click)="navigate(stat.link)"
     >
-      <div class="stat-info">
+      <div class="stat-content">
         <div class="stat-value">{{ stat.value }}</div>
         <div class="stat-title">{{ stat.title }}</div>
       </div>
@@ -24,14 +26,22 @@
 
   <!-- Dashboard İçeriği -->
   <div class="dashboard-content">
-    <div class="row">
-      <!-- Sol -->
-      <div class="col-lg-8">
+    <div class="content-row">
+      <!-- Sol Sütun -->
+      <div class="content-column main-column">
         <!-- Grafik -->
         <div class="card">
-          <div class="card-header"><h5>Genel Bakış</h5></div>
+          <div class="card-header">
+            <h3>Genel Bakış</h3>
+            <div class="header-actions">
+              <button class="btn-icon">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+            </div>
+          </div>
           <div class="card-body chart-container">
             <div class="placeholder-chart">
+              <i class="bi bi-graph-up"></i>
               <p>Grafik Alanı</p>
               <p class="note">Chart.js ile grafik yerleştirilebilir.</p>
             </div>
@@ -39,81 +49,74 @@
         </div>
 
         <!-- Aktiviteler -->
-        <div class="card mt-4">
-          <div class="card-header"><h5>Son Aktiviteler</h5></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Son Aktiviteler</h3>
+            <div class="header-actions">
+              <span class="badge">Yeni</span>
+              <button class="btn-icon">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+          </div>
           <div class="card-body">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>İşlem</th>
-                    <th>Kullanıcı</th>
-                    <th>Tarih</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let activity of recentActivities">
-                    <td>
-                      <div class="activity-item">
-                        <span
-                          class="activity-icon"
-                          [ngClass]="'activity-icon-' + activity.type"
-                        >
-                          <i
-                            [class]="
-                              activity.type === 'user'
-                                ? 'bi-person'
-                                : activity.type === 'product'
-                                ? 'bi-box'
-                                : 'bi-cart'
-                            "
-                          ></i>
-                        </span>
-                        {{ activity.action }}
-                      </div>
-                    </td>
-                    <td>{{ activity.user }}</td>
-                    <td>{{ activity.date | date: 'dd.MM.yyyy HH:mm' }}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="activity-list">
+              <div class="activity-item" *ngFor="let activity of recentActivities">
+                <div class="activity-icon" [ngClass]="'activity-type-' + activity.type">
+                  <i [class]="
+                    activity.type === 'user' ? 'bi-person' : 
+                    activity.type === 'product' ? 'bi-box' : 'bi-cart'
+                  "></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-details">
+                    <span class="activity-action">{{ activity.action }}</span>
+                    <span class="activity-user">{{ activity.user }}</span>
+                  </div>
+                  <div class="activity-meta">
+                    <span class="activity-date">{{ activity.date | date: 'dd MMM yyyy, HH:mm' }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sağ -->
-      <div class="col-lg-4">
+      <!-- Sağ Sütun -->
+      <div class="content-column side-column">
         <!-- Hızlı İstatistikler -->
         <div class="card">
-          <div class="card-header"><h5>Hızlı İstatistikler</h5></div>
+          <div class="card-header">
+            <h3>Hızlı İstatistikler</h3>
+          </div>
           <div class="card-body">
             <div class="progress-stats">
               <div class="stat-item">
-                <div class="stat-label">
+                <div class="stat-header">
                   <span>Kullanıcı Doluluğu</span>
-                  <span>65%</span>
+                  <span class="stat-percentage">65%</span>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar" style="width: 65%"></div>
+                <div class="progress-bar">
+                  <div class="progress-value" style="width: 65%"></div>
                 </div>
               </div>
               <div class="stat-item">
-                <div class="stat-label">
+                <div class="stat-header">
                   <span>Depolama Alanı</span>
-                  <span>48%</span>
+                  <span class="stat-percentage">48%</span>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar" style="width: 48%"></div>
+                <div class="progress-bar">
+                  <div class="progress-value" style="width: 48%"></div>
                 </div>
               </div>
               <div class="stat-item">
-                <div class="stat-label">
+                <div class="stat-header">
                   <span>İşlem Yükü</span>
-                  <span>80%</span>
+                  <span class="stat-percentage">80%</span>
                 </div>
-                <div class="progress">
-                  <div class="progress-bar" style="width: 80%"></div>
+                <div class="progress-bar">
+                  <div class="progress-value high" style="width: 80%"></div>
                 </div>
               </div>
             </div>
@@ -121,58 +124,92 @@
         </div>
 
         <!-- Hızlı İşlemler -->
-        <div class="card mt-4">
-          <div class="card-header"><h5>Hızlı İşlemler</h5></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Hızlı İşlemler</h3>
+          </div>
           <div class="card-body">
             <div class="quick-actions">
               <button
-                class="btn btn-primary"
+                class="action-btn primary"
                 (click)="navigate('/dashboard/users/create')"
               >
-                <i class="bi bi-person-plus"></i> Kullanıcı Ekle
+                <i class="bi bi-person-plus"></i>
+                <span>Kullanıcı Ekle</span>
               </button>
               <button
-                class="btn btn-success"
+                class="action-btn success"
                 (click)="navigate('/dashboard/categories/create')"
               >
-                <i class="bi bi-folder-plus"></i> Kategori Ekle
+                <i class="bi bi-folder-plus"></i>
+                <span>Kategori Ekle</span>
               </button>
               <button
-                class="btn btn-info"
+                class="action-btn info"
                 (click)="navigate('/dashboard/roles/create')"
               >
-                <i class="bi bi-plus-square"></i> Rol Ekle
+                <i class="bi bi-shield-plus"></i>
+                <span>Rol Ekle</span>
               </button>
               <button
-                class="btn btn-warning"
+                class="action-btn warning"
                 (click)="navigate('/dashboard/reports')"
               >
-                <i class="bi bi-file-earmark-text"></i> Müşteri Ekle
+                <i class="bi bi-person-vcard"></i>
+                <span>Müşteri Ekle</span>
               </button>
             </div>
           </div>
         </div>
 
         <!-- Sistem Durumu -->
-        <div class="card mt-4">
-          <div class="card-header"><h5>Sistem Durumu</h5></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Sistem Durumu</h3>
+            <div class="header-actions">
+              <span class="status-indicator active"></span>
+            </div>
+          </div>
           <div class="card-body">
             <ul class="system-status">
               <li class="status-item">
-                <span class="status-label">Sunucu Durumu</span>
-                <span class="status-value online">Çalışıyor</span>
+                <div class="status-label">
+                  <i class="bi bi-hdd-rack"></i>
+                  <span>Sunucu Durumu</span>
+                </div>
+                <div class="status-value online">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Çalışıyor</span>
+                </div>
               </li>
               <li class="status-item">
-                <span class="status-label">Veritabanı</span>
-                <span class="status-value online">Aktif</span>
+                <div class="status-label">
+                  <i class="bi bi-database"></i>
+                  <span>Veritabanı</span>
+                </div>
+                <div class="status-value online">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Aktif</span>
+                </div>
               </li>
               <li class="status-item">
-                <span class="status-label">Son Yedekleme</span>
-                <span class="status-value">2 saat önce</span>
+                <div class="status-label">
+                  <i class="bi bi-clock-history"></i>
+                  <span>Son Yedekleme</span>
+                </div>
+                <div class="status-value">
+                  <span>2 saat önce</span>
+                </div>
               </li>
               <li class="status-item">
-                <span class="status-label">API Durumu</span>
-                <span class="status-value online">Çalışıyor</span>
+                <div class="status-label">
+                  <i class="bi bi-hdd-network"></i>
+                  <span>API Durumu</span>
+                </div>
+                <div class="status-value online">
+                  <i class="bi bi-check-circle-fill"></i>
+                  <span>Çalışıyor</span>
+                </div>
               </li>
             </ul>
           </div>

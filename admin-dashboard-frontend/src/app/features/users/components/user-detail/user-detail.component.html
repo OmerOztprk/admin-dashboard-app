@@ -1,18 +1,85 @@
-<div class="user-detail" *ngIf="!isLoading && user">
-    <h2>{{ user.first_name || user.email }}</h2>
-    <ul>
-      <li><strong>Email:</strong> {{ user.email }}</li>
-      <li><strong>Ad Soyad:</strong> {{ user.first_name }} {{ user.last_name }}</li>
-      <li><strong>Telefon:</strong> {{ user.phone_number || 'Belirtilmemiş' }}</li>
-      <li><strong>Durum:</strong> {{ user.is_active ? 'Aktif' : 'Pasif' }}</li>
-      <li><strong>Roller:</strong> {{ user.roles.length ? user.roles.join(', ') : 'Yok' }}</li>
-      <li><strong>Oluşturulma:</strong> {{ user.created_at | date:'medium' }}</li>
-      <li><strong>Güncellenme:</strong> {{ user.updated_at | date:'medium' }}</li>
-    </ul>
-  
-    <button (click)="goBack()">Geri Dön</button>
+<div class="user-detail">
+  <div class="card" *ngIf="!isLoading && user">
+    <div class="header">
+      <h2>Kullanıcı Detayı</h2>
+      <button type="button" class="btn btn-outline" routerLink="/dashboard/users">
+        <i class="bi bi-arrow-left"></i> Geri Dön
+      </button>
+    </div>
+
+    <div class="user-profile">
+      <div class="profile-header">
+        <div class="avatar">{{ user.first_name.charAt(0) || user.email.charAt(0) }}</div>
+        <div class="profile-title">
+          <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+          <p class="email">{{ user.email }}</p>
+          <span class="status-badge" [ngClass]="user.is_active ? 'active' : 'inactive'">
+            {{ user.is_active ? "Aktif" : "Pasif" }}
+          </span>
+        </div>
+      </div>
+
+      <div class="info-sections">
+        <div class="info-section">
+          <h4><i class="bi bi-person"></i> Kişisel Bilgiler</h4>
+          <div class="info-item">
+            <span class="info-label">Ad Soyad</span>
+            <span class="info-value">{{ user.first_name }} {{ user.last_name }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ user.email }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Telefon</span>
+            <span class="info-value">{{ user.phone_number || 'Belirtilmemiş' }}</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h4><i class="bi bi-shield-lock"></i> Güvenlik & Yetkiler</h4>
+          <div class="info-item">
+            <span class="info-label">Durum</span>
+            <span class="info-value status-indicator" [ngClass]="user.is_active ? 'active' : 'inactive'">
+              <i class="bi" [ngClass]="user.is_active ? 'bi-check-circle' : 'bi-x-circle'"></i>
+              {{ user.is_active ? "Aktif" : "Pasif" }}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Roller</span>
+            <div class="info-value">
+              <div class="role-tags" *ngIf="user.roles?.length">
+                <span class="role-tag" *ngFor="let role of user.roles">{{ role }}</span>
+              </div>
+              <span *ngIf="!user.roles?.length" class="no-roles">Rol atanmamış</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h4><i class="bi bi-calendar3"></i> Sistem Bilgileri</h4>
+          <div class="info-item">
+            <span class="info-label">Oluşturulma</span>
+            <span class="info-value date">{{ user.created_at | date:'dd MMM yyyy, HH:mm' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Güncellenme</span>
+            <span class="info-value date">{{ user.updated_at | date:'dd MMM yyyy, HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-edit" (click)="router.navigate(['/dashboard/users/edit', user._id])">
+          <i class="bi bi-pencil"></i> Kullanıcıyı Düzenle
+        </button>
+      </div>
+    </div>
   </div>
-  
-  <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-  
+
+  <div class="card loading-card" *ngIf="isLoading">
+    <div class="status-message loading">
+      <i class="bi bi-arrow-repeat spin"></i> Kullanıcı bilgileri yükleniyor...
+    </div>
+  </div>
+</div>

@@ -1,57 +1,98 @@
 <div class="user-form">
-    <h2>{{ isEditMode ? 'Kullanıcıyı Düzenle' : 'Yeni Kullanıcı Ekle' }}</h2>
-  
+  <div class="card">
+    <div class="header">
+      <h2>{{ isEditMode ? 'Kullanıcıyı Düzenle' : 'Yeni Kullanıcı Ekle' }}</h2>
+      <button type="button" class="btn btn-outline" routerLink="/dashboard/users">
+        <i class="bi bi-arrow-left"></i> Geri Dön
+      </button>
+    </div>
+
     <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div>
-        <label>Ad</label>
-        <input type="text" formControlName="first_name" />
-      </div>
-  
-      <div>
-        <label>Soyad</label>
-        <input type="text" formControlName="last_name" />
-      </div>
-  
-      <div>
-        <label>Email</label>
-        <input type="email" formControlName="email" />
-      </div>
-  
-      <div>
-        <label>Telefon</label>
-        <input type="text" formControlName="phone_number" />
-      </div>
-  
-      <div *ngIf="!isEditMode">
-        <label>Şifre</label>
-        <input type="password" formControlName="password" />
-        <div *ngIf="form.controls['password'].invalid && form.controls['password'].touched" class="error">
-          Şifre en az 6 karakter olmalıdır.
+      <div class="form-content">
+        <div class="form-section">
+          <h4>Kullanıcı Bilgileri</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="first_name">Ad</label>
+              <input type="text" id="first_name" formControlName="first_name" placeholder="Adı girin" />
+              <div class="error-message" *ngIf="form.controls['first_name'].invalid && form.controls['first_name'].touched">
+                <i class="bi bi-exclamation-circle"></i> Ad alanı zorunludur.
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="last_name">Soyad</label>
+              <input type="text" id="last_name" formControlName="last_name" placeholder="Soyadı girin" />
+              <div class="error-message" *ngIf="form.controls['last_name'].invalid && form.controls['last_name'].touched">
+                <i class="bi bi-exclamation-circle"></i> Soyad alanı zorunludur.
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" formControlName="email" placeholder="Email adresini girin" />
+            <div class="error-message" *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+              <i class="bi bi-exclamation-circle"></i> Geçerli bir email adresi girin.
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone_number">Telefon</label>
+            <input type="text" id="phone_number" formControlName="phone_number" placeholder="Telefon numarası girin" />
+          </div>
+          
+          <div class="form-group" *ngIf="!isEditMode">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" formControlName="password" placeholder="Şifre oluşturun" />
+            <div class="error-message" *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
+              <i class="bi bi-exclamation-circle"></i> Şifre en az 6 karakter olmalıdır.
+            </div>
+          </div>
+          
+          <div class="form-group switch">
+            <span class="switch-label">Durum</span>
+            <label class="toggle">
+              <input type="checkbox" formControlName="is_active" />
+              <span class="toggle-slider"></span>
+              <span class="toggle-text">{{ form.value.is_active ? 'Aktif' : 'Pasif' }}</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h4>Rol Ataması</h4>
+          
+          <div class="form-group roles-group">
+            <label>Kullanıcı Rolleri</label>
+            <div class="roles-container">
+              <div *ngFor="let role of roles" class="role-option">
+                <label class="checkbox">
+                  <input 
+                    type="checkbox" 
+                    [value]="role._id" 
+                    [checked]="form.value.roles?.includes(role._id)"
+                    (change)="toggleRole(role._id)"
+                  />
+                  <span class="checkmark"></span>
+                  <span class="role-name">{{ role.role_name }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="error-message" *ngIf="form.controls['roles'].invalid && form.controls['roles'].touched">
+              <i class="bi bi-exclamation-circle"></i> En az bir rol seçmelisiniz.
+            </div>
+          </div>
         </div>
       </div>
-  
-      <div>
-        <label>
-          <input type="checkbox" formControlName="is_active" />
-          Aktif
-        </label>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid || form.pristine">
+          <i class="bi" [ngClass]="isEditMode ? 'bi-check-lg' : 'bi-plus-lg'"></i>
+          {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
+        </button>
       </div>
-  
-      <div>
-        <label>Roller</label>
-        <select formControlName="roles" multiple>
-          <option *ngFor="let role of roles" [value]="role._id">
-            {{ role.role_name }}
-          </option>
-        </select>
-        <div *ngIf="form.controls['roles'].invalid && form.controls['roles'].touched" class="error">
-          En az bir rol seçmelisiniz.
-        </div>
-      </div>
-  
-      <button type="submit" [disabled]="form.invalid || form.pristine">
-        {{ isEditMode ? 'Güncelle' : 'Oluştur' }}
-      </button>      
     </form>
   </div>
-  
+</div>

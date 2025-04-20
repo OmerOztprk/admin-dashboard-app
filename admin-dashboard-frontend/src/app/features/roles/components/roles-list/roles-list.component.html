@@ -1,38 +1,52 @@
 <div class="roles-list">
+  <div class="card">
     <div class="header">
-      <h2>Roller</h2>
-      <button class="btn-add" (click)="createRole()">
-        <i class="bi bi-plus-circle"></i> Yeni Rol
+      <h2>Rol Yönetimi</h2>
+      <button class="btn btn-primary" (click)="createRole()">
+        <i class="bi bi-plus-lg"></i> Yeni Rol Oluştur
       </button>
     </div>
-  
-    <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-  
-    <table class="role-table" *ngIf="!isLoading && roles.length">
-      <thead>
-        <tr>
-          <th>Rol Adı</th>
-          <th>Durum</th>
-          <th>İşlemler</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let role of roles">
-          <td>{{ role.role_name }}</td>
-          <td>
-            <span [class.active]="role.is_active" [class.inactive]="!role.is_active">
-              {{ role.is_active ? 'Aktif' : 'Pasif' }}
-            </span>
-          </td>
-          <td>
-            <button (click)="editRole(role)">Düzenle</button>
-            <button (click)="deleteRole(role)">Sil</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  
-    <div *ngIf="!isLoading && roles.length === 0" class="empty">Rol bulunamadı.</div>
+    
+    <div *ngIf="isLoading" class="status-message loading">
+      <i class="bi bi-arrow-repeat spin"></i> Yükleniyor...
+    </div>
+    
+    <div *ngIf="errorMessage" class="status-message error">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="!isLoading && roles.length" class="table-container">
+      <table class="role-table">
+        <thead>
+          <tr>
+            <th>Rol Adı</th>
+            <th>Durum</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roles">
+            <td>{{ role.role_name }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="role.is_active ? 'active' : 'inactive'">
+                {{ role.is_active ? 'Aktif' : 'Pasif' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button class="btn btn-edit" (click)="editRole(role)" title="Düzenle">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-delete" (click)="deleteRole(role)" title="Sil">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div *ngIf="!isLoading && roles.length === 0" class="status-message empty">
+      <i class="bi bi-inbox"></i> Henüz kayıtlı bir rol bulunmuyor.
+    </div>
   </div>
-  
+</div>

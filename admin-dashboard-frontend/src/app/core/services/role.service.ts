@@ -45,4 +45,10 @@ export class RoleService {
       `${this.API_URL}/role_privileges`
     );
   }
+  checkRoleUsage(roleId: string): Observable<any[]> {
+    return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/${roleId}/usage`).pipe(
+      map(res => res.data || [])
+    );
+  }
+  
 }

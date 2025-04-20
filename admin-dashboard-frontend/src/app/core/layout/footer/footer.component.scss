@@ -1,47 +1,84 @@
-/* filepath: c:\Users\MSI\Desktop\projects\admin-dashboard-app\admin-dashboard-frontend\src\app\core\layout\footer\footer.component.scss */
 .app-footer {
-    background-color: #fff;
-    border-top: 1px solid #e3e6f0;
-    padding: 15px 20px;
-    color: #858796;
-    font-size: 0.8rem;
+  --footer-height: 60px;
+  --footer-bg: #ffffff;
+  --footer-border: #f0f3f8;
+  --footer-text: #a0aec0;
+  --footer-link: #4e73df;
   
-    .footer-content {
+  background-color: var(--footer-bg);
+  border-top: 1px solid var(--footer-border);
+  padding: 0 24px;
+  height: var(--footer-height);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.02);
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .copyright {
+      flex: 1;
+      
+      span {
+        font-size: 0.85rem;
+        color: var(--footer-text);
+      }
+    }
+
+    .footer-links {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-  
-      .copyright {
-        flex: 1;
-      }
-  
-      .footer-links {
-        a {
-          color: #4e73df;
+      gap: 24px;
+      
+      .footer-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--footer-link);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        opacity: 0.85;
+        
+        i {
+          font-size: 0.9rem;
+        }
+        
+        &:hover {
+          opacity: 1;
+          transform: translateY(-1px);
           text-decoration: none;
-          margin-left: 20px;
-  
-          &:hover {
-            text-decoration: underline;
-          }
+          color: color-mix(in srgb, var(--footer-link) 85%, black);
+        }
+        
+        &:active {
+          transform: translateY(0);
         }
       }
     }
   }
-  
-  @media (max-width: 768px) {
-    .app-footer {
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-  
-        .footer-links {
-          margin-top: 10px;
-  
-          a {
-            margin: 0 10px;
-          }
-        }
+}
+
+@media (max-width: 768px) {
+  .app-footer {
+    height: auto;
+    padding: 16px 24px;
+    
+    .footer-content {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+
+      .footer-links {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
       }
     }
   }
+}

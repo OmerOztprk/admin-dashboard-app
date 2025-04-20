@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss']
 })
@@ -18,8 +19,8 @@ export class UserDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService,
-    private router: Router
+    public router: Router, // Changed to public to use in template
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +32,6 @@ export class UserDetailComponent implements OnInit {
 
     this.userService.getUserById(id).subscribe({
       next: res => {
-        console.log('Kullanıcı verisi:', res.data);
         this.user = res.data;
         this.isLoading = false;
       },
@@ -41,8 +41,5 @@ export class UserDetailComponent implements OnInit {
       }
     });
   }
-  
-  goBack(): void {
-    this.router.navigate(['/dashboard/users']);
-  }
+
 }
