@@ -1,94 +1,128 @@
 <div class="register-container">
+  <div class="auth-wrapper">
     <div class="register-card">
-      <h2 class="register-title">Kayıt Ol</h2>
-      
-      <div *ngIf="error" class="alert alert-danger">{{error}}</div>
-      
+      <div class="card-header">
+        <div class="logo">
+          <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" fill="#4e73df" />
+            <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" dy=".3em">Ö</text>
+          </svg>
+        </div>
+        <h1 class="register-title">Hesap Oluştur</h1>
+        <p class="register-subtitle">Bilgilerinizi doldurarak kayıt olun</p>
+      </div>
+
+      <div *ngIf="error" class="alert-message">
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-circle"></i>
+          <span>{{error}}</span>
+        </div>
+      </div>
+
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="fullName">Ad Soyad</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            formControlName="fullName" 
-            class="form-control"
-            [ngClass]="{'is-invalid': f['fullName'].touched && f['fullName'].errors}"
-          />
-          <div *ngIf="f['fullName'].touched && f['fullName'].errors" class="invalid-feedback">
-            <div *ngIf="f['fullName'].errors['required']">Ad Soyad gerekli</div>
+          <div class="input-wrapper" [class.error]="f['fullName'].touched && f['fullName'].errors">
+            <i class="bi bi-person"></i>
+            <input 
+              type="text" 
+              id="fullName" 
+              formControlName="fullName" 
+              placeholder="Ad Soyad"
+              autocomplete="name"
+            />
+          </div>
+          <div class="error-message" *ngIf="f['fullName'].touched && f['fullName'].errors">
+            <span *ngIf="f['fullName'].errors['required']">Ad Soyad gerekli</span>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="email">Email</label>
-          <input 
-            type="email" 
-            id="email" 
-            formControlName="email" 
-            class="form-control"
-            [ngClass]="{'is-invalid': f['email'].touched && f['email'].errors}"
-          />
-          <div *ngIf="f['email'].touched && f['email'].errors" class="invalid-feedback">
-            <div *ngIf="f['email'].errors['required']">Email gerekli</div>
-            <div *ngIf="f['email'].errors['email']">Geçerli bir email adresi girin</div>
+          <div class="input-wrapper" [class.error]="f['email'].touched && f['email'].errors">
+            <i class="bi bi-envelope"></i>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="ornek@mail.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="error-message" *ngIf="f['email'].touched && f['email'].errors">
+            <span *ngIf="f['email'].errors['required']">Email gerekli</span>
+            <span *ngIf="f['email'].errors['email']">Geçerli bir email adresi girin</span>
           </div>
         </div>
-  
+
         <div class="form-group">
           <label for="username">Kullanıcı Adı</label>
-          <input 
-            type="text" 
-            id="username" 
-            formControlName="username" 
-            class="form-control"
-            [ngClass]="{'is-invalid': f['username'].touched && f['username'].errors}"
-          />
-          <div *ngIf="f['username'].touched && f['username'].errors" class="invalid-feedback">
-            <div *ngIf="f['username'].errors['required']">Kullanıcı adı gerekli</div>
-            <div *ngIf="f['username'].errors['minlength']">En az 3 karakter olmalıdır</div>
+          <div class="input-wrapper" [class.error]="f['username'].touched && f['username'].errors">
+            <i class="bi bi-at"></i>
+            <input 
+              type="text" 
+              id="username" 
+              formControlName="username" 
+              placeholder="kullanici_adi"
+              autocomplete="username"
+            />
+          </div>
+          <div class="error-message" *ngIf="f['username'].touched && f['username'].errors">
+            <span *ngIf="f['username'].errors['required']">Kullanıcı adı gerekli</span>
+            <span *ngIf="f['username'].errors['minlength']">En az 3 karakter olmalıdır</span>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="password">Şifre</label>
-          <input 
-            type="password" 
-            id="password" 
-            formControlName="password" 
-            class="form-control"
-            [ngClass]="{'is-invalid': f['password'].touched && f['password'].errors}"
-          />
-          <div *ngIf="f['password'].touched && f['password'].errors" class="invalid-feedback">
-            <div *ngIf="f['password'].errors['required']">Şifre gerekli</div>
-            <div *ngIf="f['password'].errors['minlength']">En az 8 karakter olmalıdır</div>
+          <div class="input-wrapper" [class.error]="f['password'].touched && f['password'].errors">
+            <i class="bi bi-lock"></i>
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password" 
+              placeholder="••••••••"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="error-message" *ngIf="f['password'].touched && f['password'].errors">
+            <span *ngIf="f['password'].errors['required']">Şifre gerekli</span>
+            <span *ngIf="f['password'].errors['minlength']">En az 8 karakter olmalıdır</span>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="confirmPassword">Şifre Tekrar</label>
-          <input 
-            type="password" 
-            id="confirmPassword" 
-            formControlName="confirmPassword" 
-            class="form-control"
-            [ngClass]="{'is-invalid': (f['confirmPassword'].touched && f['confirmPassword'].errors) || registerForm.hasError('mismatch')}"
-          />
-          <div *ngIf="(f['confirmPassword'].touched && f['confirmPassword'].errors) || registerForm.hasError('mismatch')" class="invalid-feedback">
-            <div *ngIf="f['confirmPassword'].errors?.['required']">Şifre tekrarı gerekli</div>
-            <div *ngIf="registerForm.hasError('mismatch')">Şifreler eşleşmiyor</div>
+          <div class="input-wrapper" [class.error]="(f['confirmPassword'].touched && f['confirmPassword'].errors) || registerForm.hasError('mismatch') && f['confirmPassword'].touched">
+            <i class="bi bi-shield-lock"></i>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              formControlName="confirmPassword" 
+              placeholder="••••••••"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="error-message" *ngIf="(f['confirmPassword'].touched && f['confirmPassword'].errors) || (registerForm.hasError('mismatch') && f['confirmPassword'].touched)">
+            <span *ngIf="f['confirmPassword'].errors?.['required']">Şifre tekrarı gerekli</span>
+            <span *ngIf="registerForm.hasError('mismatch') && !f['confirmPassword'].errors?.['required']">Şifreler eşleşmiyor</span>
           </div>
         </div>
-        
-        <div class="form-group">
-          <button type="submit" [disabled]="registerForm.invalid || loading" class="btn btn-primary btn-block">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Kayıt Ol
+
+        <div class="form-actions">
+          <button type="submit" [disabled]="registerForm.invalid || loading" class="btn btn-primary">
+            <div class="btn-content">
+              <i *ngIf="!loading" class="bi bi-person-plus"></i>
+              <span *ngIf="loading" class="spinner"></span>
+              <span>Kayıt Ol</span>
+            </div>
           </button>
         </div>
-        
-        <div class="form-group text-center">
-          <p>Zaten bir hesabınız var mı? <a routerLink="/auth/login">Giriş Yap</a></p>
-        </div>
       </form>
+
+      <div class="card-footer">
+        <p>Zaten hesabınız var mı? <a routerLink="/auth/login" class="login-link">Giriş Yap</a></p>
+      </div>
     </div>
   </div>
+</div>

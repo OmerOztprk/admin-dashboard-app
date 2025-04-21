@@ -1,75 +1,62 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed">
-  <div class="sidebar-header">
-    <a class="logo-container" routerLink="/dashboard">
+<aside class="sidebar">
+    <div class="sidebar-header">
       <div class="logo">
         <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="45" fill="#4e73df" />
           <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" dy=".3em">Ö</text>
         </svg>
       </div>
-      <span class="logo-text" *ngIf="!isCollapsed">Admin Panel</span>
-    </a>
-  </div>
-
-  <div class="sidebar-content">
-    <div class="menu-category" *ngIf="!isCollapsed">
-      <span class="category-label">MENU</span>
     </div>
-    
-    <nav class="sidebar-nav">
-      <ul class="nav-list">
-        <ng-container *ngFor="let item of menuItems">
-          <li 
-            class="nav-item" 
-            *ngIf="hasPermission(item.permission)"
-            [class.has-submenu]="item.children"
-            [class.expanded]="item.expanded"
-          >
-            <a 
-              [routerLink]="item.children ? null : item.link"
-              [routerLinkActive]="item.link && !item.children ? 'active' : ''"
-              [class.parent-active]="isParentActive(item)"
-              (click)="item.children ? toggleSubMenu(item) : null"
-            >
-              <div class="nav-icon">
-                <i [class]="item.icon"></i>
-              </div>
-              <span class="nav-title" *ngIf="!isCollapsed">{{ item.title }}</span>
-              <span class="nav-indicator" *ngIf="item.children && !isCollapsed">
-                <i class="bi" [ngClass]="item.expanded ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
-              </span>
-            </a>
-            
-            <div class="tooltip" *ngIf="isCollapsed">{{ item.title }}</div>
-
-            <ul 
-              class="submenu" 
+  
+    <div class="sidebar-content">
+      <nav class="sidebar-nav">
+        <ul class="nav-list">
+          <ng-container *ngFor="let item of menuItems">
+            <li
+              class="nav-item"
+              *ngIf="hasPermission(item.permission)"
+              [class.has-submenu]="item.children"
               [class.expanded]="item.expanded"
-              *ngIf="item.children && !isCollapsed"
             >
-              <ng-container *ngFor="let child of item.children">
-                <li class="submenu-item" *ngIf="hasPermission(child.permission)">
-                  <a 
-                    [routerLink]="child.link" 
-                    routerLinkActive="active"
-                  >
-                    <div class="nav-icon">
+              <a
+                [routerLink]="item.children ? null : item.link"
+                [class.active]="item.link && router.isActive(item.link, true)"
+                (click)="item.children ? toggleSubMenu(item) : null"
+                role="button"
+              >
+                <i [class]="item.icon"></i>
+                <span>{{ item.title }}</span>
+                <i
+                  *ngIf="item.children"
+                  class="submenu-icon"
+                  [ngClass]="{
+                    'bi bi-chevron-down': !item.expanded,
+                    'bi bi-chevron-up': item.expanded
+                  }"
+                ></i>
+              </a>
+  
+              <ul *ngIf="item.children && item.expanded" class="submenu show">
+                <ng-container *ngFor="let child of item.children">
+                  <li class="submenu-item" *ngIf="hasPermission(child.permission)">
+                    <a
+                      [routerLink]="child.link"
+                      [class.active]="child.link && router.isActive(child.link, true)"
+                    >
                       <i [class]="child.icon"></i>
-                    </div>
-                    <span class="nav-title">{{ child.title }}</span>
-                  </a>
-                </li>
-              </ng-container>
-            </ul>
-          </li>
-        </ng-container>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="sidebar-footer" *ngIf="!isCollapsed">
-    <div class="version">
-      <span>Version 1.0.0</span>
+                      <span>{{ child.title }}</span>
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ul>
+      </nav>
     </div>
-  </div>
-</aside>
+  
+    <div class="sidebar-footer">
+      <div class="version">v1.0.0</div>
+    </div>
+  </aside>
+  

@@ -1,0 +1,46 @@
+<div class="customer-list">
+    <div class="header">
+      <h2>Müşteriler</h2>
+      <button (click)="goToForm()">+ Yeni Müşteri</button>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading">Yükleniyor...</div>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  
+    <table *ngIf="!isLoading && customers.length > 0">
+      <thead>
+        <tr>
+          <th>Adı</th>
+          <th>Slug</th>
+          <th>Durum</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers">
+          <td>{{ customer.name }}</td>
+          <td>
+            <a 
+              [routerLink]="['/chatbot', customer.slug]"
+              target="_blank"
+              rel="noopener"
+              class="chatbot-link">
+              {{ customer.slug }}
+            </a>
+          </td>
+          <td>
+            <span [class.active]="customer.is_active" [class.inactive]="!customer.is_active">
+              {{ customer.is_active ? 'Aktif' : 'Pasif' }}
+            </span>
+          </td>
+          <td>
+            <button (click)="editCustomer(customer)">Düzenle</button>
+            <button (click)="goToChatbot(customer.slug)">Chatbot Sayfası</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="!isLoading && customers.length === 0" class="empty">Hiç müşteri bulunamadı.</div>
+  </div>
+  

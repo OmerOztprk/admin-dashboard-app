@@ -37,9 +37,21 @@ export const routes: Routes = [
         path: 'dashboard/roles',
         loadChildren: () =>
           import('./features/roles/roles.routes').then(m => m.ROLES_ROUTES)
+      },
+      {
+        path: 'dashboard/customers',
+        loadChildren: () =>
+          import('./features/customers/customers.routes').then(m => m.CUSTOMERS_ROUTES)
       }
-
     ]
+  },
+  // ✅ Chatbot route dışarıda, layout'suz
+  {
+    path: 'chatbot/:slug',
+    loadComponent: () =>
+      import('./features/customers/components/customer-chatbot-page/customer-chatbot-page.component').then(
+        m => m.CustomerChatbotPageComponent
+      )
   },
   {
     path: '**',

@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
     { title: 'Kullanıcılar', value: 0, icon: 'bi-people', color: '#4e73df', link: '/dashboard/users' },
     { title: 'Roller', value: 0, icon: 'bi-grid', color: '#1cc88a', link: '/dashboard/roles' },
     { title: 'Kategoriler', value: 0, icon: 'bi-box', color: '#36b9cc', link: '/dashboard/categories' },
-    { title: 'Müşteriler', value: 0, icon: 'bi-cart', color: '#f6c23e', link: '/dashboard/orders' }
+    { title: 'Müşteriler', value: 0, icon: 'bi-cart', color: '#f6c23e', link: '/dashboard/customers' }
   ];
 
   constructor(

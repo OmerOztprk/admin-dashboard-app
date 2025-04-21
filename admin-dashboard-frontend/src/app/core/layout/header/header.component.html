@@ -1,66 +1,46 @@
 <header class="app-header">
-  <div class="header-left">
-    <button class="toggle-sidebar-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
-      <i class="bi bi-list"></i>
-    </button>
-    <div class="breadcrumb">
-      <span class="logo-text">Admin Panel</span>
+    <div class="header-left">
+      <div class="breadcrumb">Admin Panel</div>
     </div>
-  </div>
   
-  <div class="header-right">
-    <div class="header-search">
-      <div class="search-input-wrapper">
-        <i class="bi bi-search"></i>
+    <div class="header-right">
+      <div class="header-search">
         <input type="text" placeholder="Ara...">
+        <i class="bi bi-search"></i>
       </div>
-    </div>
-    
-    <div class="header-actions">
-      <button class="action-btn notification-btn" title="Notifications">
-        <i class="bi bi-bell"></i>
-        <span class="badge">3</span>
-      </button>
-      
-      <div class="user-dropdown">
-        <div class="user-info" [matMenuTriggerFor]="userMenu">
-          <div class="avatar">
-            {{ authService.currentUser$ | async | name | slice:0:1 | uppercase }}
-          </div>
-          <div class="user-details">
-            <span class="username">{{ authService.currentUser$ | async | name }}</span>
-            <span class="user-role">Admin</span>
-          </div>
-          <i class="bi bi-chevron-down"></i>
+  
+      <div class="header-actions">
+        <div class="notification-icon">
+          <i class="bi bi-bell"></i>
+          <span class="badge">3</span>
         </div>
-        
-        <mat-menu #userMenu="matMenu" xPosition="before">
-          <div class="menu-header">
-            <div class="user-menu-info">
-              <strong>{{ authService.currentUser$ | async | name }}</strong>
-              <small>{{ (authService.currentUser$ | async)?.email }}</small>
+  
+        <div class="user-dropdown">
+          <div class="user-info" [matMenuTriggerFor]="userMenu">
+            <div class="avatar">
+              <i class="bi bi-person-circle"></i>
             </div>
+            <span class="username">{{ authService.currentUser$ | async | name }}</span>
+            <i class="bi bi-chevron-down"></i>
           </div>
-          
-          <mat-divider></mat-divider>
-          
-          <button mat-menu-item routerLink="/dashboard/profile">
-            <i class="bi bi-person"></i>
-            <span>Profil</span>
-          </button>
-          <button mat-menu-item routerLink="/dashboard/settings">
-            <i class="bi bi-gear"></i>
-            <span>Ayarlar</span>
-          </button>
-          
-          <mat-divider></mat-divider>
-          
-          <button mat-menu-item (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>Çıkış Yap</span>
-          </button>
-        </mat-menu>
+  
+          <mat-menu #userMenu="matMenu" class="user-menu">
+            <button mat-menu-item>
+              <i class="bi bi-person"></i>
+              <span>Profil</span>
+            </button>
+            <button mat-menu-item>
+              <i class="bi bi-gear"></i>
+              <span>Ayarlar</span>
+            </button>
+            <div class="divider"></div>
+            <button mat-menu-item (click)="logout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Çıkış Yap</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
+  

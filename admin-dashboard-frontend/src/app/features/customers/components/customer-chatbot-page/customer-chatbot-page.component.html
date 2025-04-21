@@ -1,0 +1,11 @@
+<div class="chatbot-page" *ngIf="!loading && customer">
+    <h2>{{ customer.name }} için Chatbot</h2>
+    <div class="chat-container">
+      <!-- Buraya chatbot arayüzü yerleştirilecek -->
+      <p>Chat arayüzü burada olacak. (placeholder)</p>
+    </div>
+  </div>
+  
+  <div *ngIf="loading">Yükleniyor...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  
