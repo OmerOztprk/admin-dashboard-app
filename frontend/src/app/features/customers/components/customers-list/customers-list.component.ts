@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { Customer } from '../../../../core/models/customer.model';
 import { ApiResponse } from '../../../../core/models/api-response.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-customers-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './customers-list.component.html',
   styleUrls: ['./customers-list.component.scss']
 })
@@ -34,7 +34,7 @@ export class CustomersListComponent implements OnInit {
         this.customers = res;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Müşteriler alınırken hata oluştu';
         this.isLoading = false;
       }
@@ -49,7 +49,17 @@ export class CustomersListComponent implements OnInit {
     this.router.navigate(['/dashboard/customers/edit', customer._id]);
   }
 
-  goToChatbot(slug: string): void {
-    this.router.navigate(['/', slug]);
+  deleteCustomer(customer: Customer): void {
+    const confirmed = confirm(`${customer.name} adlı müşteriyi silmek istediğinize emin misiniz?`);
+    if (!confirmed) return;
+
+    this.customerService.deleteCustomer(customer._id).subscribe({
+      next: () => {
+        this.customers = this.customers.filter(c => c._id !== customer._id);
+      },
+      error: () => {
+        alert('Silme işlemi sırasında hata oluştu.');
+      }
+    });
   }
 }

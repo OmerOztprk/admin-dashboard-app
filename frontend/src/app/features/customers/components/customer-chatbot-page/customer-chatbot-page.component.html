@@ -1,0 +1,10 @@
+<div class="chatbot-page">
+  <h1>{{ customer?.name }} Chatbot Sayfası</h1>
+
+  <!-- Dilersen burada logo, açıklama, sektörel notlar gibi müşteri bilgileri gösterilebilir -->
+
+  <app-customer-chatbot-widget
+    *ngIf="customer"
+    [customPrompt]="customer.custom_Prompt ?? ''">
+  </app-customer-chatbot-widget>
+</div>

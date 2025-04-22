@@ -1,0 +1,91 @@
+  <div class="customer-form">
+    <div class="card">
+      <div class="header">
+        <h2>{{ isEditMode ? 'Müşteri Düzenle' : 'Yeni Müşteri Ekle' }}</h2>
+        <button type="button" class="btn btn-outline" routerLink="/dashboard/customers">
+          <i class="bi bi-arrow-left"></i> Geri Dön
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-content">
+          <div class="form-section">
+            <div class="form-group">
+              <label for="name">Firma Adı</label>
+              <input 
+                id="name" 
+                type="text" 
+                formControlName="name"
+                placeholder="Firma adı girin"
+              />
+              <div class="error-message" *ngIf="form.controls['name'].invalid && form.controls['name'].touched">
+                <i class="bi bi-exclamation-circle"></i> Firma adı zorunludur.
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="slug">Slug</label>
+              <input 
+                id="slug" 
+                type="text" 
+                formControlName="slug"
+                placeholder="slug-örnek"
+              />
+              <div class="error-message" *ngIf="form.controls['slug'].invalid && form.controls['slug'].touched">
+                <i class="bi bi-exclamation-circle"></i> Geçerli bir slug giriniz.
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input 
+                id="email" 
+                type="email" 
+                formControlName="email"
+                placeholder="E-posta"
+              />
+              <div class="error-message" *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+                <i class="bi bi-exclamation-circle"></i> Geçerli bir email adresi giriniz.
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="phone">Telefon</label>
+              <input 
+                id="phone" 
+                type="text" 
+                formControlName="phone"
+                placeholder="Telefon"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="customPrompt">Özel Prompt</label>
+              <input
+                id="customPrompt"
+                type="text"
+                formControlName="custom_Prompt"
+                placeholder="Bu müşterinin sohbet botu nasıl davranmalı?"
+              />
+            </div>
+            
+            <div class="form-group switch">
+              <span class="switch-label">Durum</span>
+              <label class="toggle">
+                <input type="checkbox" formControlName="is_active" />
+                <span class="toggle-slider"></span>
+                <span class="toggle-text">{{ form.value.is_active ? 'Aktif' : 'Pasif' }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+            <i class="bi" [ngClass]="isEditMode ? 'bi-check-lg' : 'bi-plus-lg'"></i>
+            {{ isEditMode ? 'Güncelle' : 'Kaydet' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

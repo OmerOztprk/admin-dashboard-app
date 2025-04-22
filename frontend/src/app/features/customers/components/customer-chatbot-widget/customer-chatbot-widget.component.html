@@ -1,0 +1,21 @@
+<div class="chatbot-float-wrapper">
+  <button class="chatbot-toggle" (click)="toggleChatbot()">
+    💬
+  </button>
+
+  <div class="chat-container" *ngIf="isOpen">
+    <div class="chat-header">AIFlow Chatbot</div>
+
+    <div class="chat-box">
+      <div *ngFor="let msg of messages"
+        [ngClass]="{'chat-message': true, 'user': msg.type === 'user', 'bot': msg.type === 'bot'}">
+        {{ msg.content }}
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input [(ngModel)]="userMessage" (keydown.enter)="sendMessage()" placeholder="Type your message..." />
+      <button (click)="sendMessage()" [disabled]="loading">Gönder</button>
+    </div>
+  </div>
+</div>

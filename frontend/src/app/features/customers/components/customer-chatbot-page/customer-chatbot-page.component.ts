@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { Customer } from '../../../../core/models/customer.model';
+import { CustomerChatbotWidgetComponent } from '../customer-chatbot-widget/customer-chatbot-widget.component';
 
 @Component({
   selector: 'app-customer-chatbot-page',
   templateUrl: './customer-chatbot-page.component.html',
   styleUrls: ['./customer-chatbot-page.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomerChatbotWidgetComponent],
 })
 export class CustomerChatbotPageComponent implements OnInit {
   slug: string | null = null;

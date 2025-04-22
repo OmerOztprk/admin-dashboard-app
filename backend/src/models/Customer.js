@@ -5,6 +5,7 @@ const customerSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   email: { type: String },
   phone: { type: String },
+  custom_Prompt: { type: String }, // <-- prompt alanı eklendi
   is_active: { type: Boolean, default: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }

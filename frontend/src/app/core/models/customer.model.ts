@@ -2,6 +2,7 @@ export interface Customer {
     _id: string;
     name: string;
     slug: string;
+    custom_Prompt?: string;
     email?: string;
     phone?: string;
     is_active: boolean;
