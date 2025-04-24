@@ -13,6 +13,18 @@ export interface RegisterRequest {
   fullName?: string;    // Frontend'de kullanım için
 }
 
+/** 2FA adımı gerekiyorsa AuthService.login() bunu döndürür */
+export interface Login2FAResponse {
+  step: '2fa';
+  userId: string;
+}
+
+/** Back-end’den kod doğrulamak için gönderilen istek */
+export interface VerifyCodeRequest {
+  userId: string;
+  code: string;
+}
+
 export interface AuthResponse {
   user: {
     id: string;

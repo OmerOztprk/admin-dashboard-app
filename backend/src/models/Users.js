@@ -10,7 +10,11 @@ const UserSchema = new mongoose.Schema(
     first_name: String,
     last_name: String,
     phone_number: String,
-    language: { type: String, default: DEFAULT_LANG }
+    language: { type: String, default: DEFAULT_LANG },
+
+    // 🔐 Two-Factor Authentication alanları
+    two_factor_code: { type: String, default: null },
+    two_factor_expire: { type: Date, default: null }
   },
   {
     versionKey: false,

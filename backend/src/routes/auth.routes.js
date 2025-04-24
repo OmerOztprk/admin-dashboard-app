@@ -6,4 +6,7 @@ const authController = require("../controllers/auth.controller");
 router.post("/login", authController.login);
 router.post("/register", authController.register);
 
+// 2FA kod doğrulama
+router.post("/verify-code", authController.verifyCode);
+
 module.exports = router;

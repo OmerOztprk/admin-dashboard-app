@@ -15,7 +15,7 @@ exports.login = async ({ email, password }) => {
 
   const payload = {
     id: user._id,
-    exp: Math.floor(Date.now() / 1000) + config.JWT.EXPIRE_TIME
+    exp: Math.floor(Date.now() / 1000) + config.JWT.EXPIRE_TIME,
   };
 
   const token = jwt.sign(payload, config.JWT.SECRET);
@@ -26,8 +26,8 @@ exports.login = async ({ email, password }) => {
       id: user._id,
       email: user.email,
       first_name: user.first_name,
-      last_name: user.last_name
-    }
+      last_name: user.last_name,
+    },
   };
 };
 
@@ -42,10 +42,9 @@ exports.register = async ({ email, password, first_name, last_name }) => {
     password: hashedPassword,
     first_name,
     last_name,
-    is_active: true
+    is_active: true,
   });
 
-  // Default olarak SUPER_ADMIN rolü varsa ata
   let role = await Roles.findOne({ role_name: "SUPER_ADMIN" });
   if (!role) {
     role = await Roles.create({ role_name: "SUPER_ADMIN", is_active: true });

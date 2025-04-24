@@ -1,73 +1,103 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
+import { Login2FAResponse } from '../../../../core/models/auth.model';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  /* Formlar onInit’te atanacak */
+  loginForm!: FormGroup;
+  codeForm!: FormGroup;
+
   loading = false;
   error = '';
-  returnUrl: string;
+  show2FA = false;
+
+  private readonly returnUrl: string;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService
   ) {
-    this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-      rememberMe: [false]
-    });
+    this.returnUrl =
+      this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-
-    // Redirect if already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate([this.returnUrl]);
     }
   }
 
-  ngOnInit(): void { }
+  /* ------------------- INIT ------------------- */
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      rememberMe: [false]          // ← eklendi
+    });
 
-  get f() { return this.loginForm.controls; }
+    this.codeForm = this.fb.group({
+      code: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
 
-  onSubmit(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
-
+  /* ---------------- 1. ADIM ---------------- */
+  onSubmitLogin(): void {
+    if (this.loginForm.invalid) return;
     this.loading = true;
     this.error = '';
 
-    console.log('Login formu gönderiliyor:', this.loginForm.value);
+    this.authService.login(this.loginForm.value).subscribe({
+      next: res => {
+        this.loading = false;
 
-    this.authService.login(this.loginForm.value)
-      .subscribe({
-        next: (user) => {
-          console.log('Login başarılı, kullanıcı:', user);
-          this.router.navigate([this.returnUrl]);
-        },
-        error: (error) => {
-          console.log('Login hatası:', error);
-          if (typeof error === 'string') {
-            this.error = error;
-          } else if (error.message) {
-            this.error = error.message;
-          } else {
-            this.error = 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.';
-          }
-          this.loading = false;
+        if ((res as Login2FAResponse).step === '2fa') {
+          /* Kod ekranına geç */
+          this.show2FA = true;
+          return;
         }
-      });
+
+        /* Doğrudan giriş başarılı */
+        this.router.navigate([this.returnUrl]);
+      },
+      error: err => this.handleError(err)
+    });
+  }
+
+  /* ---------------- 2. ADIM ---------------- */
+  onSubmitCode(): void {
+    if (this.codeForm.invalid) return;
+    this.loading = true;
+    this.error = '';
+
+    this.authService.verifyCode(this.codeForm.value.code).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate([this.returnUrl]);
+      },
+      error: err => this.handleError(err)
+    });
+  }
+
+  /* ---------------- Helpers ---------------- */
+  private handleError(err: any): void {
+    this.loading = false;
+    this.error =
+      err?.message || 'İşlem sırasında bir hata oluştu, lütfen tekrar deneyin.';
+    console.error(err);
   }
 }

@@ -1,4 +1,4 @@
-import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { TokenService } from '../services/token.service';
 import { throwError } from 'rxjs';
@@ -8,7 +8,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const router = inject(Router);
 
-  if (req.url.includes('/auth/login') || req.url.includes('/auth/register')) {
+  // Kimlik gerektirmeyen endpoint’ler
+  if (
+    req.url.includes('/auth/login') ||
+    req.url.includes('/auth/register') ||
+    req.url.includes('/auth/verify-code')
+  ) {
     return next(req);
   }
 
@@ -21,7 +26,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return throwError(() => new Error('Token süresi doldu'));
   }
 
-  return next(req.clone({
-    setHeaders: { Authorization: `Bearer ${token}` }
-  }));
+  return next(
+    req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    })
+  );
 };
