@@ -22,7 +22,7 @@ exports.getById = async (req, res) => {
 
 exports.add = async (req, res) => {
   try {
-    const { name, slug, email, phone, custom_Prompt, is_active } = req.body;
+    const { name, slug, email, phone, customPrompt, is_active } = req.body;
 
     const existing = await Customer.findOne({ slug });
     if (existing) return res.status(400).json(Response.error("Slug zaten mevcut"));
@@ -32,7 +32,7 @@ exports.add = async (req, res) => {
       slug,
       email,
       phone,
-      custom_Prompt, // ✅ prompt kaydı
+      customPrompt, // ✅ prompt kaydı
       is_active
     });
 
@@ -44,7 +44,7 @@ exports.add = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const { _id, name, slug, email, phone, is_active, custom_Prompt } = req.body;
+    const { _id, name, slug, email, phone, is_active, customPrompt } = req.body;
 
     const updated = await Customer.findByIdAndUpdate(
       _id,
@@ -54,7 +54,7 @@ exports.update = async (req, res) => {
         email,
         phone,
         is_active,
-        custom_Prompt, // ✅ güncelleme desteği
+        customPrompt, // ✅ güncelleme desteği
         updated_at: new Date()
       },
       { new: true }

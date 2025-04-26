@@ -16,6 +16,7 @@ export class CustomerChatbotWidgetComponent {
   userMessage = '';
   messages: { type: 'user' | 'bot'; content: string }[] = [];
   loading = false;
+  sessionId: string = this.generateSessionId(); // <-- session ID üretildi
 
   constructor(private chatbotService: ChatbotService) {}
 
@@ -31,7 +32,8 @@ export class CustomerChatbotWidgetComponent {
     this.userMessage = '';
     this.loading = true;
 
-    this.chatbotService.connectToChat(message, this.customPrompt).subscribe({
+    // Burada artık sessionId'yi de gönderiyoruz!
+    this.chatbotService.connectToChat(message, this.customPrompt, this.sessionId).subscribe({
       next: (chunk) => {
         const last = this.messages[this.messages.length - 1];
         if (last?.type === 'bot') {
@@ -48,5 +50,9 @@ export class CustomerChatbotWidgetComponent {
         this.loading = false;
       }
     });
+  }
+
+  private generateSessionId(): string {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
   }
 }

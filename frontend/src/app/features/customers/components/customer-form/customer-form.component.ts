@@ -34,7 +34,7 @@ export class CustomerFormComponent implements OnInit {
       email: [''],
       phone: [''],
       is_active: [true],
-      custom_Prompt: [''] // ✅ prompt alanı eklendi
+      customPrompt: [''] // ✅ prompt alanı eklendi
     });
 
     if (this.isEditMode && this.customerId) {
