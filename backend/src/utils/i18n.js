@@ -5,21 +5,24 @@ class I18n {
     this.lang = lang;
   }
 
-  translate(text, lang = this.lang, params = []) {
-    const parts = text.split(".");
-    let val = i18nData[lang]?.[parts[0]];
-
-    for (let i = 1; i < parts.length; i++) {
-      val = val?.[parts[i]];
-    }
-
-    if (typeof val === "string") {
-      for (let i = 0; i < params.length; i++) {
-        val = val.replace("{}", params[i]);
+  translate(path, lang = this.lang, params = []) {
+    try {
+      const parts = path.split(".");
+      let value = i18nData[lang];
+      for (const part of parts) {
+        value = value?.[part];
       }
-    }
 
-    return val || text;
+      if (typeof value === "string" && params.length > 0) {
+        params.forEach((param) => {
+          value = value.replace("{}", param);
+        });
+      }
+
+      return value || path;
+    } catch {
+      return path;
+    }
   }
 }
 

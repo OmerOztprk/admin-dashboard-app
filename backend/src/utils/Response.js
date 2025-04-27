@@ -4,10 +4,7 @@ const i18n = require("./i18n");
 
 class Response {
   static success(data, code = Enum.HTTP_CODES.OK) {
-    return {
-      code,
-      data
-    };
+    return { code, data };
   }
 
   static error(error, lang = "EN") {
@@ -15,11 +12,11 @@ class Response {
 
     if (error instanceof CustomError) {
       return {
-        code: error.code,
+        code: error.code || Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
         error: {
           message: error.message,
-          description: error.description
-        }
+          description: error.description,
+        },
       };
     }
 
@@ -28,17 +25,17 @@ class Response {
         code: Enum.HTTP_CODES.CONFLICT,
         error: {
           message: i18n.translate("COMMON.ALREADY_EXIST", lang),
-          description: i18n.translate("COMMON.ALREADY_EXIST", lang)
-        }
+          description: i18n.translate("COMMON.ALREADY_EXIST", lang),
+        },
       };
     }
 
     return {
-      code: Enum.HTTP_CODES.INT_SERVER_ERROR,
+      code: Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
       error: {
         message: i18n.translate("COMMON.UNKNOWN_ERROR", lang),
-        description: error.message
-      }
+        description: error.message || "Unexpected error",
+      },
     };
   }
 }

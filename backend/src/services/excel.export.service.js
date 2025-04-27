@@ -1,11 +1,6 @@
 const xlsx = require("node-xlsx");
 
 class ExportService {
-  /**
-   * @param {Array} headers Excel başlıkları (örn: ["NAME", "IS ACTIVE?"])
-   * @param {Array} fields Objede karşılık gelen alanlar (örn: ["name", "is_active"])
-   * @param {Array} data Veriler
-   */
   toExcel(headers, fields, data = []) {
     const rows = [headers];
 

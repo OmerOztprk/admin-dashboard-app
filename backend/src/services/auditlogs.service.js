@@ -1,7 +1,6 @@
 const AuditLogs = require("../models/AuditLogs");
-const Enum = require("../config/Enum");
 
-class AuditService {
+class AuditLogsService {
   static async info(email, location, proc_type, log) {
     return this.saveToDB("INFO", email, location, proc_type, log);
   }
@@ -25,12 +24,12 @@ class AuditService {
         email,
         location,
         proc_type,
-        log
+        log,
       });
     } catch (err) {
-      console.error("Audit log kayıt hatası:", err.message);
+      console.error("❌ Audit log kayıt hatası:", err.message);
     }
   }
 }
 
-module.exports = AuditService;
+module.exports = AuditLogsService;

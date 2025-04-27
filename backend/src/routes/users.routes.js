@@ -2,48 +2,24 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user.controller");
 const auth = require("../middlewares/auth.middleware");
+const validate = require("../middlewares/validate.middleware");
+const { addUserSchema, updateUserSchema, deleteUserSchema } = require("../validators/user.validator");
 
-// 🔐 Tüm route'lara authentication zorunluluğu
 router.use(auth.authenticate());
 
-// 🆕 Profile endpoint
 router.get("/profile", async (req, res) => {
   try {
-    const user = req.user;
-
-    if (!user) {
-      return res.status(404).json({
-        code: 404,
-        success: false,
-        message: "Kullanıcı bulunamadı",
-        data: null,
-      });
-    }
-
-    const { password, ...safeUser } = user.toObject ? user.toObject() : user;
-
-    return res.status(200).json({
-      code: 200,
-      success: true,
-      message: "Profil başarıyla alındı",
-      data: safeUser,
-    });
+    const { password, ...safeUser } = req.user.toObject ? req.user.toObject() : req.user;
+    res.status(200).json({ code: 200, success: true, data: safeUser });
   } catch (err) {
-    console.error("Profil getirilemedi:", err);
-    return res.status(500).json({
-      code: 500,
-      success: false,
-      message: "Profil bilgisi alınamadı",
-      data: null,
-    });
+    res.status(500).json({ code: 500, success: false, message: "Profil alınamadı" });
   }
 });
 
-// Diğer yetkili işlemler
 router.get("/", auth.checkRoles("user_view"), userController.getAllUsers);
-router.post("/add", auth.checkRoles("user_add"), userController.addUser);
-router.post("/update", auth.checkRoles("user_update"), userController.updateUser);
-router.post("/delete", auth.checkRoles("user_delete"), userController.deleteUser);
-router.get("/:id", auth.checkRoles("user_view"), userController.getById); 
+router.get("/:id", auth.checkRoles("user_view"), userController.getById);
+router.post("/add", auth.checkRoles("user_add"), validate(addUserSchema), userController.addUser);
+router.post("/update", auth.checkRoles("user_update"), validate(updateUserSchema), userController.updateUser);
+router.post("/delete", auth.checkRoles("user_delete"), validate(deleteUserSchema), userController.deleteUser);
 
 module.exports = router;

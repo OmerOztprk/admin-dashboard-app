@@ -30,11 +30,4 @@ UserSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-// Auth öncesi validasyon
-UserSchema.statics.validateFieldsBeforeAuth = function (email, password) {
-  if (typeof password !== "string" || password.length < 8 || !email.includes("@")) {
-    throw new Error("Geçersiz email veya şifre");
-  }
-};
-
 module.exports = mongoose.model("users", UserSchema);

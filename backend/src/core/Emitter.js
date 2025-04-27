@@ -1,14 +1,12 @@
 const { EventEmitter } = require("events");
 
-let instance = null;
-
 class Emitter {
   constructor() {
-    if (!instance) {
+    if (!Emitter.instance) {
       this.emitters = {};
-      instance = this;
+      Emitter.instance = this;
     }
-    return instance;
+    return Emitter.instance;
   }
 
   addEmitter(name) {
@@ -22,4 +20,7 @@ class Emitter {
   }
 }
 
-module.exports = new Emitter();
+const instance = new Emitter();
+Object.freeze(instance);
+
+module.exports = instance;

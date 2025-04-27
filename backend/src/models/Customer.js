@@ -1,14 +1,21 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const customerSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  slug: { type: String, required: true, unique: true },
-  email: { type: String },
-  phone: { type: String },
-  customPrompt: { type: String }, // <-- prompt alanı eklendi
-  is_active: { type: Boolean, default: true },
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
-});
+const customerSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
+    email: { type: String },
+    phone: { type: String },
+    customPrompt: { type: String },
+    is_active: { type: Boolean, default: true },
+  },
+  {
+    versionKey: false,
+    timestamps: {
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+    },
+  }
+);
 
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model("customers", customerSchema);

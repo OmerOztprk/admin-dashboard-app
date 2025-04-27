@@ -2,99 +2,79 @@ const Roles = require("../models/Roles");
 const RolePrivileges = require("../models/RolePrivileges");
 const UserRoles = require("../models/UserRoles");
 const CustomError = require("../utils/CustomError");
-const Enum = require("../config/Enum");
-const AuditLogs = require("./audit.service");
+const AuditLogs = require("./auditlogs.service");
 
 exports.getAll = async () => {
   const roles = await Roles.find({}).lean();
-
   for (let role of roles) {
     const permissions = await RolePrivileges.find({ role_id: role._id });
     role.permissions = permissions.map((p) => p.permission);
   }
-
   return roles;
 };
 
-exports.add = async (body, user) => {
-  if (
-    !body.role_name ||
-    !Array.isArray(body.permissions) ||
-    body.permissions.length === 0
-  ) {
-    throw new CustomError(
-      400,
-      "Validation Error",
-      "Rol adı ve en az 1 yetki gerekli."
-    );
-  }
+exports.getById = async (id) => {
+  const role = await Roles.findById(id).lean();
+  if (!role) return null;
+  const permissions = await RolePrivileges.find({ role_id: id });
+  role.permissions = permissions.map((p) => p.permission);
+  return role;
+};
+
+exports.getRoleUsage = async (roleId) => {
+  const usage = await UserRoles.find({ role_id: roleId });
+  return usage;
+};
+
+exports.add = async ({ role_name, permissions }, user) => {
+  const existing = await Roles.findOne({ role_name });
+  if (existing) throw new CustomError(409, "Conflict", "Bu rol zaten mevcut");
 
   const role = await Roles.create({
-    role_name: body.role_name,
+    role_name,
     is_active: true,
     created_by: user.id,
   });
 
-  for (const perm of body.permissions) {
-    await RolePrivileges.create({
-      role_id: role._id,
-      permission: perm,
-      created_by: user.id,
-    });
-  }
+  const permissionDocs = permissions.map((perm) => ({
+    role_id: role._id,
+    permission: perm,
+    created_by: user.id,
+  }));
+
+  await RolePrivileges.insertMany(permissionDocs);
 
   AuditLogs.info(user.email, "Roles", "Add", { role });
 
   return { success: true };
 };
 
-exports.update = async (body, user) => {
-  if (!body._id) {
-    throw new CustomError(400, "Validation Error", "_id gerekli.");
+exports.update = async ({ _id, role_name, is_active, permissions }, user) => {
+  const role = await Roles.findById(_id);
+  if (!role) throw new CustomError(404, "Not Found", "Rol bulunamadı");
+
+  if (role_name !== undefined) role.role_name = role_name;
+  if (is_active !== undefined) role.is_active = is_active;
+  await role.save();
+
+  if (Array.isArray(permissions)) {
+    await RolePrivileges.deleteMany({ role_id: _id });
+    const newPermissions = permissions.map((perm) => ({
+      role_id: _id,
+      permission: perm,
+      created_by: user.id,
+    }));
+    await RolePrivileges.insertMany(newPermissions);
   }
 
-  const updates = {};
-  if (body.role_name) updates.role_name = body.role_name;
-  if (typeof body.is_active === "boolean") updates.is_active = body.is_active;
-
-  await Roles.updateOne({ _id: body._id }, updates);
-
-  if (Array.isArray(body.permissions)) {
-    const existing = await RolePrivileges.find({ role_id: body._id });
-    const existingPerms = existing.map((p) => p.permission);
-
-    const newPerms = body.permissions.filter((p) => !existingPerms.includes(p));
-    const removed = existing.filter(
-      (x) => !body.permissions.includes(x.permission)
-    );
-
-    if (removed.length > 0) {
-      await RolePrivileges.deleteMany({
-        _id: { $in: removed.map((x) => x._id) },
-      });
-    }
-
-    for (const perm of newPerms) {
-      await RolePrivileges.create({
-        role_id: body._id,
-        permission: perm,
-        created_by: user.id,
-      });
-    }
-  }
-
-  AuditLogs.info(user.email, "Roles", "Update", { role_id: body._id, updates });
+  AuditLogs.info(user.email, "Roles", "Update", { role_id: _id });
 
   return { success: true };
 };
 
 exports.remove = async (_id, user) => {
-  if (!_id) throw new CustomError(400, "Validation Error", "_id gerekli.");
-
-  // Rol herhangi bir kullanıcıya atanmışsa silme
   const usage = await UserRoles.findOne({ role_id: _id });
-  if (usage)
-    throw new CustomError(403, "Kullanılıyor", "Bu rol atanmış, silinemez.");
+  if (usage) throw new CustomError(403, "Forbidden", "Bu rol atanmış, silinemez");
 
   await RolePrivileges.deleteMany({ role_id: _id });
   await Roles.deleteOne({ _id });
@@ -102,14 +82,4 @@ exports.remove = async (_id, user) => {
   AuditLogs.info(user.email, "Roles", "Delete", { _id });
 
   return { success: true };
-};
-
-exports.getById = async (id) => {
-  const role = await Roles.findById(id).lean();
-  if (!role) return null;
-
-  const permissions = await RolePrivileges.find({ role_id: id });
-  role.permissions = permissions.map((p) => p.permission);
-
-  return role;
 };

@@ -9,7 +9,7 @@ const CustomError = require("../utils/CustomError");
 exports.authenticate = () => async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token gerekli" });
+    return next(new CustomError(401, "Unauthorized", "Token gerekli"));
   }
 
   const token = authHeader.split(" ")[1];
@@ -39,14 +39,14 @@ exports.authenticate = () => async (req, res, next) => {
 
     next();
   } catch (err) {
-    return res.status(403).json({ message: "Geçersiz veya süresi dolmuş token" });
+    return next(new CustomError(403, "Forbidden", "Geçersiz veya süresi dolmuş token"));
   }
 };
 
 exports.checkRoles = (...expectedRoles) => {
   return (req, res, next) => {
     if (!req.user || !req.user.roles) {
-      return res.status(403).json({ message: "Yetkisiz erişim" });
+      return next(new CustomError(403, "Forbidden", "Yetkisiz erişim"));
     }
 
     const hasRole = req.user.roles.some((role) =>
@@ -54,7 +54,7 @@ exports.checkRoles = (...expectedRoles) => {
     );
 
     if (!hasRole) {
-      return res.status(403).json({ message: "Bu işlemi yapmaya yetkin yok" });
+      return next(new CustomError(403, "Forbidden", "Bu işlemi yapmaya yetkin yok"));
     }
 
     next();

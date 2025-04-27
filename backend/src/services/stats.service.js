@@ -1,13 +1,12 @@
 const AuditLogs = require("../models/AuditLogs");
 const Categories = require("../models/Categories");
 const Users = require("../models/Users");
-const mongoose = require("mongoose");
 
-exports.auditLogs = async (body) => {
+exports.auditLogs = async ({ location }) => {
   const filter = {};
 
-  if (typeof body.location === "string") {
-    filter.location = body.location;
+  if (location) {
+    filter.location = location;
   }
 
   const result = await AuditLogs.aggregate([
@@ -15,31 +14,35 @@ exports.auditLogs = async (body) => {
     {
       $group: {
         _id: { email: "$email", proc_type: "$proc_type" },
-        count: { $sum: 1 }
-      }
+        count: { $sum: 1 },
+      },
     },
-    { $sort: { count: -1 } }
+    { $sort: { count: -1 } },
   ]);
 
   return result;
 };
 
-exports.uniqueCategories = async (body) => {
+exports.uniqueCategories = async ({ is_active }) => {
   const filter = {};
-  if (typeof body.is_active === "boolean") {
-    filter.is_active = body.is_active;
+
+  if (typeof is_active === "boolean") {
+    filter.is_active = is_active;
   }
 
-  const result = await Categories.distinct("name", filter);
-  return { result, count: result.length };
+  const categories = await Categories.distinct("name", filter);
+
+  return { categories, count: categories.length };
 };
 
-exports.userCount = async (body) => {
+exports.userCount = async ({ is_active }) => {
   const filter = {};
-  if (typeof body.is_active === "boolean") {
-    filter.is_active = body.is_active;
+
+  if (typeof is_active === "boolean") {
+    filter.is_active = is_active;
   }
 
   const count = await Users.countDocuments(filter);
+
   return { count };
 };

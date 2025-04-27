@@ -12,5 +12,4 @@ router.use("/auth", require("./auth.routes"));
 router.use("/customers", require("./customer.routes"));
 router.use("/aiflow", require("./aiflow.routes"));
 
-
 module.exports = router;
