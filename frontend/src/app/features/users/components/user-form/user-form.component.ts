@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { UserService } from '../../../../core/services/user.service';
 import { RoleService } from '../../../../core/services/role.service';
-import { User } from '../../../../core/models/user.model';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-form',
@@ -20,6 +18,8 @@ export class UserFormComponent implements OnInit {
   isEditMode = false;
   userId!: string;
   roles: { _id: string; role_name: string }[] = [];
+
+  showPasswordField = false; // ✅ Şifre alanını açıp kapatacağız
 
   constructor(
     private fb: FormBuilder,
@@ -48,10 +48,9 @@ export class UserFormComponent implements OnInit {
       phone_number: [''],
       is_active: [true],
       roles: [[], Validators.required],
-      password: ['']
+      password: [''] // Başlangıçta boş
     });
 
-    // Eğer yeni kullanıcı oluşturuluyorsa, şifre zorunlu ve minimum 6 karakter olmalı
     if (!this.isEditMode) {
       this.form.get('password')?.addValidators([Validators.required, Validators.minLength(6)]);
     }
@@ -69,10 +68,8 @@ export class UserFormComponent implements OnInit {
 
   loadUser(id: string): void {
     this.userService.getUserById(id).subscribe({
-      next: res => {
-        if (res.data) {
-          const user = res.data;
-
+      next: (user) => {
+        if (user) {
           const roleIds = this.roles
             .filter(role => user.roles?.includes(role.role_name))
             .map(role => role._id);
@@ -82,24 +79,24 @@ export class UserFormComponent implements OnInit {
             roles: roleIds,
             password: ''
           });
-
-          // 🛠 Formun dirty/valid kontrolü yeniden tetiklenmesi için
-          setTimeout(() => {
-            this.form.markAsTouched();
-            this.form.markAsDirty();
-            this.form.updateValueAndValidity();
-          });
         }
       },
       error: err => console.error('Kullanıcı yüklenemedi:', err.message)
     });
   }
 
-
   onSubmit(): void {
     if (this.form.invalid) return;
 
     const formData = { ...this.form.value };
+
+    // ✅ Edit modunda şifre boşsa backend'e yollamayalım
+    if (this.isEditMode && !this.showPasswordField) {
+      delete formData.password;
+    } else if (this.isEditMode && this.showPasswordField && !formData.password) {
+      alert('Şifre alanı boş bırakılamaz.');
+      return;
+    }
 
     const action$ = this.isEditMode
       ? this.userService.updateUser(this.userId, formData)

@@ -42,10 +42,20 @@ export const routes: Routes = [
         path: 'dashboard/customers',
         loadChildren: () =>
           import('./features/customers/customers.routes').then(m => m.CUSTOMERS_ROUTES)
-      }
+      },
+      {
+        path: 'dashboard/auditlogs',
+        loadChildren: () =>
+          import('./features/auditlogs/auditlogs.routes').then(m => m.AUDITLOGS_ROUTES)
+      },
+      {
+        path: 'dashboard/stats',
+        loadChildren: () =>
+          import('./features/stats/stats.routes').then(m => m.STATS_ROUTES)
+      },
+
     ]
   },
-  // ✅ Chatbot route dışarıda, layout'suz
   {
     path: 'chatbot/:slug',
     loadComponent: () =>

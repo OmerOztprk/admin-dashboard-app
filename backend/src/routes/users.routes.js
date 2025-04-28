@@ -7,15 +7,7 @@ const { addUserSchema, updateUserSchema, deleteUserSchema } = require("../valida
 
 router.use(auth.authenticate());
 
-router.get("/profile", async (req, res) => {
-  try {
-    const { password, ...safeUser } = req.user.toObject ? req.user.toObject() : req.user;
-    res.status(200).json({ code: 200, success: true, data: safeUser });
-  } catch (err) {
-    res.status(500).json({ code: 500, success: false, message: "Profil alınamadı" });
-  }
-});
-
+router.get("/profile", userController.getProfile);
 router.get("/", auth.checkRoles("user_view"), userController.getAllUsers);
 router.get("/:id", auth.checkRoles("user_view"), userController.getById);
 router.post("/add", auth.checkRoles("user_add"), validate(addUserSchema), userController.addUser);

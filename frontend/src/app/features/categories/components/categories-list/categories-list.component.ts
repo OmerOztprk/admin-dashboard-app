@@ -16,7 +16,10 @@ export class CategoriesListComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private categoryService: CategoryService, private router: Router) {}
+  constructor(
+    private categoryService: CategoryService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadCategories();
@@ -25,8 +28,8 @@ export class CategoriesListComponent implements OnInit {
   loadCategories(): void {
     this.isLoading = true;
     this.categoryService.getAllCategories().subscribe({
-      next: res => {
-        this.categories = res.data || [];
+      next: categories => {
+        this.categories = categories;
         this.isLoading = false;
       },
       error: err => {

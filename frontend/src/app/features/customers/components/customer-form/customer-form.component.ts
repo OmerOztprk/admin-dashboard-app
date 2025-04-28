@@ -28,27 +28,34 @@ export class CustomerFormComponent implements OnInit {
     this.customerId = this.route.snapshot.paramMap.get('id');
     this.isEditMode = !!this.customerId;
 
+    this.initForm();
+
+    if (this.isEditMode && this.customerId) {
+      this.loadCustomer(this.customerId);
+    }
+  }
+
+  initForm(): void {
     this.form = this.fb.group({
       name: ['', Validators.required],
       slug: ['', Validators.required],
       email: [''],
       phone: [''],
       is_active: [true],
-      customPrompt: [''] // ✅ prompt alanı eklendi
+      customPrompt: ['']
     });
+  }
 
-    if (this.isEditMode && this.customerId) {
-      this.customerService.getCustomerById(this.customerId).subscribe({
-        next: res => {
-          if (res.data) {
-            this.form.patchValue(res.data);
-          } else {
-            alert('Müşteri verisi bulunamadı.');
-          }
-        },
-        error: () => alert('Müşteri bilgisi alınamadı.')
-      });
-    }
+  loadCustomer(id: string): void {
+    this.customerService.getCustomerById(id).subscribe({
+      next: (customer) => {
+        this.form.patchValue(customer);
+      },
+      error: (err) => {
+        alert('Müşteri verisi alınamadı: ' + (err?.message || 'Hata'));
+        this.router.navigate(['/dashboard/customers']);
+      }
+    });
   }
 
   onSubmit(): void {
@@ -62,7 +69,7 @@ export class CustomerFormComponent implements OnInit {
 
     request$.subscribe({
       next: () => this.router.navigate(['/dashboard/customers']),
-      error: err => alert('Hata: ' + err.message)
+      error: (err) => alert('Hata: ' + err?.message)
     });
   }
 }

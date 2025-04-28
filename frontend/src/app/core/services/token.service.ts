@@ -44,7 +44,6 @@ export class TokenService {
     }
   }
 
-  // İsteğe bağlı: Token süresine kalan zamanı milisaniye cinsinden verir
   getTokenRemainingTime(): number | null {
     const token = this.token;
     if (!token) return null;

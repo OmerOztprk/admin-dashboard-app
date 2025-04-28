@@ -1,62 +1,61 @@
-<aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">
-        <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="45" fill="#4e73df" />
-          <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" dy=".3em">Ö</text>
-        </svg>
-      </div>
+<aside class="sidebar" *ngIf="(loading$ | async) === false && (currentUser$ | async) as user">
+  <div class="sidebar-header">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="45" fill="#4e73df" />
+        <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" dy=".3em">Ö</text>
+      </svg>
     </div>
-  
-    <div class="sidebar-content">
-      <nav class="sidebar-nav">
-        <ul class="nav-list">
-          <ng-container *ngFor="let item of menuItems">
-            <li
-              class="nav-item"
-              *ngIf="hasPermission(item.permission)"
-              [class.has-submenu]="item.children"
-              [class.expanded]="item.expanded"
+  </div>
+
+  <div class="sidebar-content">
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <ng-container *ngFor="let item of menuItems">
+          <li
+            class="nav-item"
+            *ngIf="hasPermission(user, item.permission)"
+            [class.has-submenu]="item.children"
+            [class.expanded]="item.expanded"
+          >
+            <a
+              [routerLink]="item.children ? null : item.link"
+              [class.active]="item.link && router.isActive(item.link, true)"
+              (click)="item.children ? toggleSubMenu(item) : null"
+              role="button"
             >
-              <a
-                [routerLink]="item.children ? null : item.link"
-                [class.active]="item.link && router.isActive(item.link, true)"
-                (click)="item.children ? toggleSubMenu(item) : null"
-                role="button"
-              >
-                <i [class]="item.icon"></i>
-                <span>{{ item.title }}</span>
-                <i
-                  *ngIf="item.children"
-                  class="submenu-icon"
-                  [ngClass]="{
-                    'bi bi-chevron-down': !item.expanded,
-                    'bi bi-chevron-up': item.expanded
-                  }"
-                ></i>
-              </a>
-  
-              <ul *ngIf="item.children && item.expanded" class="submenu show">
-                <ng-container *ngFor="let child of item.children">
-                  <li class="submenu-item" *ngIf="hasPermission(child.permission)">
-                    <a
-                      [routerLink]="child.link"
-                      [class.active]="child.link && router.isActive(child.link, true)"
-                    >
-                      <i [class]="child.icon"></i>
-                      <span>{{ child.title }}</span>
-                    </a>
-                  </li>
-                </ng-container>
-              </ul>
-            </li>
-          </ng-container>
-        </ul>
-      </nav>
-    </div>
-  
-    <div class="sidebar-footer">
-      <div class="version">v1.0.0</div>
-    </div>
-  </aside>
-  
+              <i [class]="item.icon"></i>
+              <span>{{ item.title }}</span>
+              <i
+                *ngIf="item.children"
+                class="submenu-icon"
+                [ngClass]="{
+                  'bi bi-chevron-down': !item.expanded,
+                  'bi bi-chevron-up': item.expanded
+                }"
+              ></i>
+            </a>
+
+            <ul *ngIf="item.children && item.expanded" class="submenu show">
+              <ng-container *ngFor="let child of item.children">
+                <li class="submenu-item" *ngIf="hasPermission(user, child.permission)">
+                  <a
+                    [routerLink]="child.link"
+                    [class.active]="child.link && router.isActive(child.link, true)"
+                  >
+                    <i [class]="child.icon"></i>
+                    <span>{{ child.title }}</span>
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+          </li>
+        </ng-container>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="version">v1.0.0</div>
+  </div>
+</aside>

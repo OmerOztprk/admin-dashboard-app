@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-
-export interface Category {
-  _id?: string;
-  name: string;
-  is_active: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
+import { ApiResponse } from '../models/api-response.model';
+import { Category } from '../models/category.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
@@ -18,23 +12,48 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAllCategories(): Observable<ApiResponse<Category[]>> {
-    return this.http.get<ApiResponse<Category[]>>(this.API_URL);
+  getAllCategories(): Observable<Category[]> {
+    return this.http.get<ApiResponse<Category[]>>(this.API_URL).pipe(
+      map(res => res.data || []),
+      catchError(this.handleHttpError('Kategoriler yüklenemedi'))
+    );
   }
 
-  getCategoryById(id: string): Observable<ApiResponse<Category>> {
-    return this.http.get<ApiResponse<Category>>(`${this.API_URL}/${id}`);
+  getCategoryById(id: string): Observable<Category> {
+    return this.http.get<ApiResponse<Category>>(`${this.API_URL}/${id}`).pipe(
+      map(res => {
+        if (!res.data) throw new Error('Kategori bulunamadı.');
+        return res.data;
+      }),
+      catchError(this.handleHttpError('Kategori getirilemedi'))
+    );
   }
 
-  createCategory(data: Partial<Category>): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.API_URL}/add`, data);
+  createCategory(data: Partial<Category>): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/add`, data).pipe(
+      map(res => res.data),
+      catchError(this.handleHttpError('Kategori oluşturulamadı'))
+    );
   }
 
-  updateCategory(data: Partial<Category>): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.API_URL}/update`, data);
+  updateCategory(data: Partial<Category>): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/update`, data).pipe(
+      map(res => res.data),
+      catchError(this.handleHttpError('Kategori güncellenemedi'))
+    );
   }
 
-  deleteCategory(id: string): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.API_URL}/delete`, { _id: id });
+  deleteCategory(id: string): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/delete`, { _id: id }).pipe(
+      map(res => res.data),
+      catchError(this.handleHttpError('Kategori silinemedi'))
+    );
+  }
+
+  private handleHttpError(fallbackMessage: string) {
+    return (error: any) => {
+      const message = error?.error?.message || fallbackMessage;
+      return throwError(() => new Error(message));
+    };
   }
 }

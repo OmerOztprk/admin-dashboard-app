@@ -20,7 +20,7 @@ export class UsersListComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -29,8 +29,8 @@ export class UsersListComponent implements OnInit {
   loadUsers(): void {
     this.isLoading = true;
     this.userService.getAllUsers().subscribe({
-      next: (res) => {
-        this.users = res.data || [];
+      next: (users) => {
+        this.users = users;
         this.isLoading = false;
       },
       error: (err) => {

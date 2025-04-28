@@ -2,12 +2,10 @@ const express = require("express");
 const router = express.Router();
 const emitter = require("../core/Emitter");
 const { HTTP_CODES } = require("../config/Enum");
-const auth = require("../middlewares/auth.middleware"); // Eğer global auth kullanıyorsak!
+const auth = require("../middlewares/auth.middleware");
 
-// Event emitter başlat (bir kere)
 emitter.addEmitter("notifications");
 
-// Event emitter için maximum listener sayısını artır (default 10'dur, artırmazsak warning verir)
 emitter.getEmitter("notifications").setMaxListeners(100);
 
 router.use(auth.authenticate()); // Eğer SSE açan client kimlikli olacaksa!
@@ -34,13 +32,11 @@ router.get("/", (req, res) => {
 
     const notificationsEmitter = emitter.getEmitter("notifications");
 
-    // Dinleyici ekle
     notificationsEmitter.on("message", sendNotification);
 
-    // Bağlantı kapanınca
     req.on("close", () => {
-      clearInterval(heartbeat); // Heartbeat durdur
-      notificationsEmitter.off("message", sendNotification); // Dinleyiciyi kaldır
+      clearInterval(heartbeat);
+      notificationsEmitter.off("message", sendNotification);
     });
 
   } catch (err) {

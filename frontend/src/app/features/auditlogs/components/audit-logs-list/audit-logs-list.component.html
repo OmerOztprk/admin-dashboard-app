@@ -1,0 +1,55 @@
+<div class="audit-logs-list">
+  <div class="card">
+    <div class="header">
+      <h2>Audit Logları</h2>
+    </div>
+
+    <div class="filters">
+      <div class="input-group">
+        <input type="date" [(ngModel)]="beginDate" placeholder="Başlangıç tarihi" />
+        <input type="date" [(ngModel)]="endDate" placeholder="Bitiş tarihi" />
+        <button class="btn primary" (click)="applyFilter()">Filtrele</button>
+        <button class="btn secondary" (click)="clearFilter()">Temizle</button>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="status-message loading">
+      <i class="bi bi-arrow-repeat spin"></i> Yükleniyor...
+    </div>
+
+    <div *ngIf="errorMessage" class="status-message error">
+      <i class="bi bi-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div *ngIf="!isLoading && auditLogs.length" class="table-container">
+      <table class="audit-logs-table">
+        <thead>
+          <tr>
+            <th>Tarih</th>
+            <th>Email</th>
+            <th>Lokasyon</th>
+            <th>İşlem</th>
+            <th>Seviye</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of auditLogs">
+            <td>{{ log.created_at | date: 'dd MMM yyyy HH:mm' }}</td>
+            <td>{{ log.email }}</td>
+            <td>{{ log.location }}</td>
+            <td>{{ log.proc_type }}</td>
+            <td>
+              <span class="badge" [ngClass]="getLevelBadgeClass(log.level)">
+                {{ log.level }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!isLoading && auditLogs.length === 0" class="status-message empty">
+      <i class="bi bi-inbox"></i> Hiç kayıt bulunamadı.
+    </div>
+  </div>
+</div>

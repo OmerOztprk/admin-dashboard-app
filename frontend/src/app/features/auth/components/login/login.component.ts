@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  Validators,
-  FormGroup,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -18,7 +13,6 @@ import { Login2FAResponse } from '../../../../core/models/auth.model';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  /* Formlar onInit’te atanacak */
   loginForm!: FormGroup;
   codeForm!: FormGroup;
 
@@ -42,12 +36,11 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  /* ------------------- INIT ------------------- */
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      rememberMe: [false]          // ← eklendi
+      rememberMe: [false]
     });
 
     this.codeForm = this.fb.group({
@@ -55,7 +48,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /* ---------------- 1. ADIM ---------------- */
   onSubmitLogin(): void {
     if (this.loginForm.invalid) return;
     this.loading = true;
@@ -66,19 +58,16 @@ export class LoginComponent implements OnInit {
         this.loading = false;
 
         if ((res as Login2FAResponse).step === '2fa') {
-          /* Kod ekranına geç */
           this.show2FA = true;
           return;
         }
 
-        /* Doğrudan giriş başarılı */
         this.router.navigate([this.returnUrl]);
       },
       error: err => this.handleError(err)
     });
   }
 
-  /* ---------------- 2. ADIM ---------------- */
   onSubmitCode(): void {
     if (this.codeForm.invalid) return;
     this.loading = true;
@@ -93,7 +82,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /* ---------------- Helpers ---------------- */
   private handleError(err: any): void {
     this.loading = false;
     this.error =

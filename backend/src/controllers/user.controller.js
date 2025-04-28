@@ -46,3 +46,12 @@ exports.deleteUser = async (req, res) => {
     res.status(err.code || 500).json(Response.error(err, req.user?.language));
   }
 };
+
+exports.getProfile = async (req, res) => {
+  try {
+    const profile = await UserService.getProfileById(req.user.id);
+    res.json(Response.success(profile));
+  } catch (err) {
+    res.status(err.code || 500).json(Response.error(err));
+  }
+};

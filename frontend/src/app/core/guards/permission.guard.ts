@@ -10,7 +10,7 @@ export const permissionGuard = (permission: string): CanActivateFn => {
     const hasAccess = authService.hasPermission(permission);
 
     if (!hasAccess) {
-      router.navigate(['/dashboard']);
+      router.navigate(['/dashboard'], { queryParams: { unauthorized: true } });
     }
 
     return hasAccess;

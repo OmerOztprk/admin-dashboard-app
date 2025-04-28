@@ -15,16 +15,23 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: config.MAIL.USER,
+    pass: config.MAIL.PASS,
   },
 });
 
 exports.send2FACodeEmail = async (to, code) => {
-  await transporter.sendMail({
-    from: `"Admin Panel" <${process.env.MAIL_USER}>`,
-    to,
-    subject: 'Giriş Kodunuz',
-    text: `Oturum açmak için kodunuz: ${code}`,
-  });
+
+  try {
+    await transporter.sendMail({
+      from: config.MAIL.FROM || `"Admin Panel" <${config.MAIL.USER}>`,
+      to,
+      subject: 'Giriş Kodunuz',
+      text: `Oturum açmak için kodunuz: ${code}`,
+    });
+
+  } catch (error) {
+    console.error("[MAIL] Gönderim hatası:", error.message);
+    throw new Error("Mail gönderimi başarısız oldu.");
+  }
 };

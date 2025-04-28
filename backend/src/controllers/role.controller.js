@@ -1,6 +1,6 @@
 const RoleService = require("../services/role.service");
 const Response = require("../utils/Response");
-const { privileges } = require("../config/role_privileges");
+const { privileges, privGroups } = require("../config/role_privileges"); 
 
 exports.getAll = async (req, res) => {
   try {
@@ -50,7 +50,7 @@ exports.remove = async (req, res) => {
 
 exports.getPrivileges = (req, res) => {
   try {
-    res.json(Response.success(privileges));
+    res.json(Response.success({ privGroups, privileges }));
   } catch (err) {
     res.status(500).json(Response.error(err));
   }

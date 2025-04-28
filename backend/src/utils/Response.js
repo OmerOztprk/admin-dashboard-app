@@ -1,6 +1,6 @@
 const Enum = require("../config/Enum");
-const CustomError = require("./CustomError");
-const i18n = require("./i18n");
+const CustomError = require("../utils/CustomError");
+const i18n = require("../utils/i18n");
 
 class Response {
   static success(data, code = Enum.HTTP_CODES.OK) {

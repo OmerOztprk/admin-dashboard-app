@@ -22,16 +22,16 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService
   ) {
     this.registerForm = this.formBuilder.group({
-      fullName: ['', Validators.required],
+      first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      username: ['', [Validators.required, Validators.minLength(3)]],
+      phone_number: ['', [Validators.pattern(/^\+?[0-9]{10,15}$/)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required]
     }, {
       validators: this.passwordMatchValidator
     });
 
-    // Redirect if already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
     }
@@ -41,42 +41,28 @@ export class RegisterComponent implements OnInit {
 
   get f() { return this.registerForm.controls; }
 
-  passwordMatchValidator(g: FormGroup) {
-    const password = g.get('password')?.value;
-    const confirmPassword = g.get('confirmPassword')?.value;
-    
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { mismatch: true };
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) {
-      return;
-    }
+    if (this.registerForm.invalid) return;
 
     this.loading = true;
     this.error = '';
 
-    const { confirmPassword, fullName, ...registerData } = this.registerForm.value;
-    
-    // Kullanıcı adı ve soyadını ayır (boşluğa göre)
-    const nameParts = fullName.split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
-    
-    // Backend'in beklediği formata uygun veri oluştur
-    const requestData = {
-      ...registerData,
-      first_name: firstName,
-      last_name: lastName
-    };
+    const { confirmPassword, ...requestData } = this.registerForm.value;
 
     this.authService.register(requestData)
       .subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.loading = false;
+          this.router.navigate(['/auth/login']); // 📌 Kayıt sonrası login ekranına
         },
         error: (error) => {
-          this.error = error.error?.message || 'Kayıt işlemi başarısız.';
+          this.error = error?.message || 'Kayıt işlemi başarısız.';
           this.loading = false;
         }
       });

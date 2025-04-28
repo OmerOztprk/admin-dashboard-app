@@ -21,7 +21,7 @@ export class UserDetailComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router, // Changed to public to use in template
     private userService: UserService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -31,15 +31,14 @@ export class UserDetailComponent implements OnInit {
     }
 
     this.userService.getUserById(id).subscribe({
-      next: res => {
-        this.user = res.data;
+      next: (user) => {
+        this.user = user;
         this.isLoading = false;
       },
-      error: err => {
+      error: (err) => {
         this.errorMessage = err.message || 'Kullanıcı yüklenemedi.';
         this.isLoading = false;
       }
     });
   }
-
 }

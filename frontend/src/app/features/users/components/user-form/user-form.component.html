@@ -43,13 +43,23 @@
             <input type="text" id="phone_number" formControlName="phone_number" placeholder="Telefon numarası girin" />
           </div>
           
-          <div class="form-group" *ngIf="!isEditMode">
+                    <!-- ŞİFRE ALANI -->
+          <div class="form-group" *ngIf="!isEditMode || showPasswordField">
             <label for="password">Şifre</label>
-            <input type="password" id="password" formControlName="password" placeholder="Şifre oluşturun" />
+            <input type="password" id="password" formControlName="password" placeholder="Şifre oluşturun veya değiştirin" />
             <div class="error-message" *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
               <i class="bi bi-exclamation-circle"></i> Şifre en az 6 karakter olmalıdır.
             </div>
           </div>
+
+          <!-- Şifre Değiştir Butonu (edit modda) -->
+          <div *ngIf="isEditMode" class="form-group">
+            <button type="button" class="btn btn-secondary" (click)="showPasswordField = !showPasswordField">
+              <i class="bi" [ngClass]="showPasswordField ? 'bi-eye-slash' : 'bi-pencil-square'"></i>
+              {{ showPasswordField ? 'Şifre Değişikliğini İptal Et' : 'Şifreyi Değiştir' }}
+            </button>
+          </div>
+
           
           <div class="form-group switch">
             <span class="switch-label">Durum</span>

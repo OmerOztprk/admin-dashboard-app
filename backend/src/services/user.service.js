@@ -1,5 +1,6 @@
 const Users = require("../models/Users");
 const UserRoles = require("../models/UserRoles");
+const RolePrivileges = require("../models/RolePrivileges");
 const bcrypt = require("bcryptjs");
 const CustomError = require("../utils/CustomError");
 const Enum = require("../config/Enum");
@@ -86,4 +87,19 @@ exports.remove = async (id, currentUser) => {
   AuditLogs.info(currentUser.email, "Users", "Delete", { _id: id });
 
   return { success: true };
+};
+
+exports.getProfileById = async (id) => {
+  const user = await Users.findById(id, { password: 0 }).lean();
+  if (!user) return null;
+
+  const userRoles = await UserRoles.find({ user_id: id }).populate("role_id");
+  const roleIds = userRoles.map(r => r.role_id?._id);
+
+  const rolePrivileges = await RolePrivileges.find({ role_id: { $in: roleIds } });
+
+  user.roles = userRoles.map(r => r.role_id?.role_name);
+  user.permissions = rolePrivileges.map(p => p.permission);
+
+  return user;
 };

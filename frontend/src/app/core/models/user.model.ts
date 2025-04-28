@@ -5,8 +5,9 @@ export interface User {
   last_name: string;
   phone_number?: string;
   is_active: boolean;
-  roles: string[]; // Backend'den role_name listesi geliyor (örnek: ["ADMIN", "EDITOR"])
-  permissions?: string[];
+  language: string;
+  roles: string[];
+  permissions: string[];
   created_at?: string;
   updated_at?: string;
 }

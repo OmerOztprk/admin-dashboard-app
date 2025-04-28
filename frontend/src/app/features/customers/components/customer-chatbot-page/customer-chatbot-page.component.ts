@@ -7,10 +7,10 @@ import { CustomerChatbotWidgetComponent } from '../customer-chatbot-widget/custo
 
 @Component({
   selector: 'app-customer-chatbot-page',
-  templateUrl: './customer-chatbot-page.component.html',
-  styleUrls: ['./customer-chatbot-page.component.scss'],
   standalone: true,
   imports: [CommonModule, CustomerChatbotWidgetComponent],
+  templateUrl: './customer-chatbot-page.component.html',
+  styleUrls: ['./customer-chatbot-page.component.scss']
 })
 export class CustomerChatbotPageComponent implements OnInit {
   slug: string | null = null;
@@ -28,8 +28,8 @@ export class CustomerChatbotPageComponent implements OnInit {
 
     if (this.slug) {
       this.customerService.getCustomerBySlug(this.slug).subscribe({
-        next: (res) => {
-          this.customer = res.data ?? null;
+        next: (customer) => {
+          this.customer = customer ?? null;
           this.loading = false;
         },
         error: (err) => {
@@ -37,6 +37,9 @@ export class CustomerChatbotPageComponent implements OnInit {
           this.loading = false;
         }
       });
+    } else {
+      this.error = 'Geçersiz bağlantı';
+      this.loading = false;
     }
   }
 }

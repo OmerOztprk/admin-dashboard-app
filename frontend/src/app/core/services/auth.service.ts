@@ -1,24 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  BehaviorSubject,
-  Observable,
-  of,
-  throwError,
-  map,
-  switchMap,
-  catchError,
-  tap
-} from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
 import { User } from '../models/user.model';
 import { ApiResponse } from '../models/api-response.model';
-import {
-  LoginRequest,
-  RegisterRequest,
-  Login2FAResponse
-} from '../models/auth.model';
+import { LoginRequest, RegisterRequest, Login2FAResponse } from '../models/auth.model';
 import { TokenService } from './token.service';
 import { environment } from '../../../environments/environment';
 
@@ -29,7 +16,9 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public readonly currentUser$ = this.currentUserSubject.asObservable();
 
-  /** 1. adımın sonunda 2FA bekleyen kullanıcı ID’si */
+  private loadingSubject = new BehaviorSubject<boolean>(true); // ⭐ loading state
+  public readonly loading$ = this.loadingSubject.asObservable();
+
   private pending2FAUserId: string | null = null;
 
   constructor(
@@ -40,135 +29,70 @@ export class AuthService {
     this.loadCurrentUser();
   }
 
-  /* ------------------------------------------------------------------ */
-  /*                            PUBLIC  API                              */
-  /* ------------------------------------------------------------------ */
-
-  /** E-posta/Şifre ile giriş → User ya da 2FA akışı */
-  login(
-    credentials: LoginRequest
-  ): Observable<User | Login2FAResponse> {
-    this.log('Login isteği', credentials);
-
-    return this.http
-      .post<ApiResponse<any>>(`${this.API_URL}/auth/login`, credentials)
-      .pipe(
-        tap(res => this.log('Login yanıtı', res)),
-        map(res => {
-          if (res.code !== 200 || !res.data) {
-            throw new Error(res.message || 'Giriş başarısız.');
-          }
-
-          /* 2FA gerekiyorsa */
-          if (res.data.step === '2fa') {
-            const userId = res.data.userId ?? credentials.email; // fallback
-            this.pending2FAUserId = userId;
-            return { step: '2fa', userId } as Login2FAResponse;
-          }
-
-          /* Doğrudan token geldiyse */
-          this.handleLoginSuccess(res.data.token, res.data.user);
-          return this.mapToUser(res.data.user);
-        }),
-        catchError(err => this.handleHttpError(err, 'Kimlik doğrulama hatası.'))
-      );
+  login(credentials: LoginRequest): Observable<User | Login2FAResponse> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/login`, credentials).pipe(
+      tap(res => this.log('Login yanıtı', res)),
+      map(res => {
+        if (res.code !== 200 || !res.data) throw new Error(res.message || 'Giriş başarısız.');
+        if (res.data.step === '2fa') {
+          this.pending2FAUserId = res.data.userId;
+          return { step: '2fa', userId: res.data.userId } as Login2FAResponse;
+        }
+        this.handleLoginSuccess(res.data.token, res.data.user);
+        return this.mapToUser(res.data.user);
+      }),
+      catchError(err => this.handleHttpError(err, 'Kimlik doğrulama hatası.'))
+    );
   }
 
-  /** 2FA kod doğrulama → User */
   verifyCode(code: string): Observable<User> {
     if (!this.pending2FAUserId) {
-      return throwError(() =>
-        new Error('2FA oturumu bulunamadı, lütfen baştan giriş yapın.')
-      );
+      return throwError(() => new Error('2FA oturumu bulunamadı, tekrar giriş yapın.'));
     }
 
-    return this.http
-      .post<ApiResponse<any>>(`${this.API_URL}/auth/verify-code`, {
-        userId: this.pending2FAUserId,
-        code
-      })
-      .pipe(
-        map(res => {
-          if (res.code !== 200 || !res.data) {
-            throw new Error(res.message || 'Kod doğrulanamadı.');
-          }
-          this.handleLoginSuccess(res.data.token, res.data.user);
-          this.pending2FAUserId = null;
-          return this.mapToUser(res.data.user);
-        }),
-        catchError(err => this.handleHttpError(err, 'Kod doğrulanamadı.'))
-      );
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/verify-code`, {
+      userId: this.pending2FAUserId,
+      code
+    }).pipe(
+      map(res => {
+        if (res.code !== 200 || !res.data) throw new Error(res.message || 'Kod doğrulanamadı.');
+        this.handleLoginSuccess(res.data.token, res.data.user);
+        this.pending2FAUserId = null;
+        return this.mapToUser(res.data.user);
+      }),
+      catchError(err => this.handleHttpError(err, 'Kod doğrulama hatası.'))
+    );
   }
 
-  register(data: RegisterRequest): Observable<User | Login2FAResponse> {
-    return this.http
-      .post<ApiResponse<any>>(`${this.API_URL}/auth/register`, data)
-      .pipe(
-        switchMap(res => {
-          if (res.code === 200) {
-            // Başarılı kayıt → login
-            return this.login({
-              email: data.email,
-              password: data.password
-            });
-          }
-          throw new Error(res.message || 'Kayıt başarısız.');
-        }),
-        catchError(err =>
-          this.handleHttpError(err, 'Kayıt sırasında hata oluştu.')
-        )
-      );
+  register(data: RegisterRequest): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/auth/register`, data).pipe(
+      catchError(err => this.handleHttpError(err, 'Kayıt sırasında hata oluştu.'))
+    );
   }
 
-  /** JWT ile profil getir */
   getUserProfile(): Observable<User> {
-    return this.http
-      .get<ApiResponse<User>>(`${this.API_URL}/users/profile`)
-      .pipe(
-        map(res => {
-          if (res.code === 200 && res.data) {
-            this.currentUserSubject.next(res.data);
-            return res.data;
-          }
-          throw new Error(res.message || 'Profil alınamadı.');
-        }),
-        catchError(err => {
-          if (err.status === 401 || err.status === 403) this.logout();
-          return throwError(() => err);
-        })
-      );
+    return this.http.get<ApiResponse<User>>(`${this.API_URL}/users/profile`).pipe(
+      map(res => {
+        if (res.code === 200 && res.data) {
+          this.currentUserSubject.next(res.data);
+          return res.data;
+        }
+        throw new Error(res.message || 'Profil alınamadı.');
+      }),
+      catchError(err => {
+        if (err.status === 401 || err.status === 403) this.logout();
+        return throwError(() => err);
+      })
+    );
   }
 
   logout(): void {
     this.tokenService.removeTokens();
     this.currentUserSubject.next(null);
+    this.loadingSubject.next(false); // ⭐
     this.pending2FAUserId = null;
-    if (this.router.url !== '/auth/login') this.router.navigate(['/auth/login']);
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*                             HELPERS                                */
-  /* ------------------------------------------------------------------ */
-
-  private handleLoginSuccess(token: string, rawUser: any) {
-    this.tokenService.setTokens(token);
-    const user = this.mapToUser(rawUser);
-    this.currentUserSubject.next(user);
-  }
-
-  private loadCurrentUser(): void {
-    const token = this.tokenService.token;
-    if (token && !this.tokenService.isTokenExpired()) {
-      this.getUserProfile().subscribe({
-        next: user => this.log('Kullanıcı yüklendi', user),
-        error: err => {
-          this.log('Profil yüklenemedi', err);
-          this.logout();
-        }
-      });
-    } else if (token) {
-      this.log('Token süresi dolmuş, çıkış yapılıyor');
-      this.logout();
+    if (this.router.url !== '/auth/login') {
+      this.router.navigate(['/auth/login']);
     }
   }
 
@@ -177,13 +101,34 @@ export class AuthService {
   }
 
   hasPermission(permission: string): boolean {
-    return (
-      this.currentUserSubject.value?.permissions?.includes(permission) ||
-      false
-    );
+    return this.currentUserSubject.value?.permissions?.includes(permission) || false;
   }
 
-  /* --------- Dönüşüm & Hata & Log --------- */
+  private handleLoginSuccess(token: string, rawUser: any): void {
+    this.tokenService.setTokens(token);
+    const user = this.mapToUser(rawUser);
+    this.currentUserSubject.next(user);
+    this.loadingSubject.next(false); // ⭐ kullanıcı geldiğinde loading bitir
+  }
+
+  private loadCurrentUser(): void {
+    const token = this.tokenService.token;
+    if (token && !this.tokenService.isTokenExpired()) {
+      this.getUserProfile().subscribe({
+        next: user => {
+          this.currentUserSubject.next(user);
+          this.loadingSubject.next(false);
+        },
+        error: err => {
+          this.logout();
+        }
+      });
+    } else {
+      this.loadingSubject.next(false);
+      this.logout();
+    }
+  }
+
 
   private mapToUser(raw: any): User {
     return {
@@ -193,6 +138,7 @@ export class AuthService {
       last_name: raw.last_name ?? '',
       phone_number: raw.phone_number ?? '',
       is_active: raw.is_active ?? true,
+      language: raw.language ?? 'TR',
       roles: raw.roles ?? [],
       permissions: raw.permissions ?? [],
       created_at: raw.created_at ?? '',
@@ -205,7 +151,7 @@ export class AuthService {
     return throwError(() => new Error(message));
   }
 
-  private log(label: string, data?: any) {
+  private log(label: string, data?: any): void {
     if (!environment.production) {
       console.log(`[AuthService] ${label}:`, data);
     }

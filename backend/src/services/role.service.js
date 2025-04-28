@@ -2,7 +2,7 @@ const Roles = require("../models/Roles");
 const RolePrivileges = require("../models/RolePrivileges");
 const UserRoles = require("../models/UserRoles");
 const CustomError = require("../utils/CustomError");
-const AuditLogs = require("./auditlogs.service");
+const AuditLogs = require("../services/auditlogs.service");
 
 exports.getAll = async () => {
   const roles = await Roles.find({}).lean();

@@ -5,7 +5,7 @@
         <div class="logo">
           <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="45" fill="#4e73df" />
-            <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" font-family="Arial, sans-serif" dy=".3em">Ö</text>
+            <text x="50%" y="55%" text-anchor="middle" fill="#fff" font-size="42" dy=".3em">Ö</text>
           </svg>
         </div>
         <h1 class="register-title">Hesap Oluştur</h1>
@@ -15,39 +15,41 @@
       <div *ngIf="error" class="alert-message">
         <div class="alert alert-danger">
           <i class="bi bi-exclamation-circle"></i>
-          <span>{{error}}</span>
+          <span>{{ error }}</span>
         </div>
       </div>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Ad -->
         <div class="form-group">
-          <label for="fullName">Ad Soyad</label>
-          <div class="input-wrapper" [class.error]="f['fullName'].touched && f['fullName'].errors">
+          <label for="first_name">Adınız</label>
+          <div class="input-wrapper" [class.error]="f['first_name'].touched && f['first_name'].errors">
             <i class="bi bi-person"></i>
-            <input 
-              type="text" 
-              id="fullName" 
-              formControlName="fullName" 
-              placeholder="Ad Soyad"
-              autocomplete="name"
-            />
+            <input id="first_name" type="text" formControlName="first_name" placeholder="Adınız" autocomplete="given-name" />
           </div>
-          <div class="error-message" *ngIf="f['fullName'].touched && f['fullName'].errors">
-            <span *ngIf="f['fullName'].errors['required']">Ad Soyad gerekli</span>
+          <div class="error-message" *ngIf="f['first_name'].touched && f['first_name'].errors">
+            <span>Ad gerekli</span>
           </div>
         </div>
 
+        <!-- Soyad -->
+        <div class="form-group">
+          <label for="last_name">Soyadınız</label>
+          <div class="input-wrapper" [class.error]="f['last_name'].touched && f['last_name'].errors">
+            <i class="bi bi-person"></i>
+            <input id="last_name" type="text" formControlName="last_name" placeholder="Soyadınız" autocomplete="family-name" />
+          </div>
+          <div class="error-message" *ngIf="f['last_name'].touched && f['last_name'].errors">
+            <span>Soyad gerekli</span>
+          </div>
+        </div>
+
+        <!-- Email -->
         <div class="form-group">
           <label for="email">Email</label>
           <div class="input-wrapper" [class.error]="f['email'].touched && f['email'].errors">
             <i class="bi bi-envelope"></i>
-            <input 
-              type="email" 
-              id="email" 
-              formControlName="email" 
-              placeholder="ornek@mail.com"
-              autocomplete="email"
-            />
+            <input id="email" type="email" formControlName="email" placeholder="ornek@mail.com" autocomplete="email" />
           </div>
           <div class="error-message" *ngIf="f['email'].touched && f['email'].errors">
             <span *ngIf="f['email'].errors['required']">Email gerekli</span>
@@ -55,57 +57,40 @@
           </div>
         </div>
 
+        <!-- Telefon -->
         <div class="form-group">
-          <label for="username">Kullanıcı Adı</label>
-          <div class="input-wrapper" [class.error]="f['username'].touched && f['username'].errors">
-            <i class="bi bi-at"></i>
-            <input 
-              type="text" 
-              id="username" 
-              formControlName="username" 
-              placeholder="kullanici_adi"
-              autocomplete="username"
-            />
+          <label for="phone_number">Telefon</label>
+          <div class="input-wrapper" [class.error]="f['phone_number'].touched && f['phone_number'].errors">
+            <i class="bi bi-telephone"></i>
+            <input id="phone_number" type="tel" formControlName="phone_number" placeholder="+905555555555" autocomplete="tel" />
           </div>
-          <div class="error-message" *ngIf="f['username'].touched && f['username'].errors">
-            <span *ngIf="f['username'].errors['required']">Kullanıcı adı gerekli</span>
-            <span *ngIf="f['username'].errors['minlength']">En az 3 karakter olmalıdır</span>
+          <div class="error-message" *ngIf="f['phone_number'].touched && f['phone_number'].errors">
+            <span>Geçerli bir telefon numarası girin</span>
           </div>
         </div>
 
+        <!-- Şifre -->
         <div class="form-group">
           <label for="password">Şifre</label>
           <div class="input-wrapper" [class.error]="f['password'].touched && f['password'].errors">
             <i class="bi bi-lock"></i>
-            <input 
-              type="password" 
-              id="password" 
-              formControlName="password" 
-              placeholder="••••••••"
-              autocomplete="new-password"
-            />
+            <input id="password" type="password" formControlName="password" placeholder="••••••••" autocomplete="new-password" />
           </div>
           <div class="error-message" *ngIf="f['password'].touched && f['password'].errors">
-            <span *ngIf="f['password'].errors['required']">Şifre gerekli</span>
-            <span *ngIf="f['password'].errors['minlength']">En az 8 karakter olmalıdır</span>
+            <span>Şifre gerekli (min 8 karakter)</span>
           </div>
         </div>
 
+        <!-- Şifre Tekrar -->
         <div class="form-group">
           <label for="confirmPassword">Şifre Tekrar</label>
-          <div class="input-wrapper" [class.error]="(f['confirmPassword'].touched && f['confirmPassword'].errors) || registerForm.hasError('mismatch') && f['confirmPassword'].touched">
+          <div class="input-wrapper" [class.error]="f['confirmPassword'].touched && (f['confirmPassword'].errors || registerForm.hasError('mismatch'))">
             <i class="bi bi-shield-lock"></i>
-            <input 
-              type="password" 
-              id="confirmPassword" 
-              formControlName="confirmPassword" 
-              placeholder="••••••••"
-              autocomplete="new-password"
-            />
+            <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••" autocomplete="new-password" />
           </div>
-          <div class="error-message" *ngIf="(f['confirmPassword'].touched && f['confirmPassword'].errors) || (registerForm.hasError('mismatch') && f['confirmPassword'].touched)">
+          <div class="error-message" *ngIf="f['confirmPassword'].touched && (f['confirmPassword'].errors || registerForm.hasError('mismatch'))">
             <span *ngIf="f['confirmPassword'].errors?.['required']">Şifre tekrarı gerekli</span>
-            <span *ngIf="registerForm.hasError('mismatch') && !f['confirmPassword'].errors?.['required']">Şifreler eşleşmiyor</span>
+            <span *ngIf="registerForm.hasError('mismatch')">Şifreler eşleşmiyor</span>
           </div>
         </div>
 

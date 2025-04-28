@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CategoryService } from '../../../../core/services/category.service';
-import { Category } from '../../../../core/models/category.model';
-import { ApiResponse } from '../../../../core/models/api-response.model';
 
 @Component({
   selector: 'app-category-form',
@@ -32,18 +30,7 @@ export class CategoryFormComponent implements OnInit {
     this.initForm();
 
     if (this.isEditMode && this.categoryId) {
-      this.categoryService.getCategoryById(this.categoryId).subscribe({
-        next: (res: ApiResponse<Category>) => {
-          if (res.data) {
-            this.form.patchValue(res.data);
-          } else {
-            alert('Kategori bulunamadı.');
-          }
-        },
-        error: (err) => {
-          alert('Kategori bilgisi alınamadı: ' + err.message);
-        }
-      });
+      this.loadCategory(this.categoryId);
     }
   }
 
@@ -51,6 +38,18 @@ export class CategoryFormComponent implements OnInit {
     this.form = this.fb.group({
       name: ['', Validators.required],
       is_active: [true]
+    });
+  }
+
+  loadCategory(id: string): void {
+    this.categoryService.getCategoryById(id).subscribe({
+      next: category => {
+        this.form.patchValue(category);
+      },
+      error: err => {
+        alert('Kategori bilgisi alınamadı: ' + err.message);
+        this.router.navigate(['/dashboard/categories']);
+      }
     });
   }
 
@@ -65,7 +64,7 @@ export class CategoryFormComponent implements OnInit {
 
     request$.subscribe({
       next: () => this.router.navigate(['/dashboard/categories']),
-      error: (err) => alert('Hata: ' + err.message)
+      error: err => alert('Hata: ' + err.message)
     });
   }
 }

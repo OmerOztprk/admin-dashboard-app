@@ -2,5 +2,8 @@ export interface ApiResponse<T> {
   code: number;
   data?: T;
   message?: string;
-  error?: string;
+  error?: {
+    message: string;
+    description: string;
+  };
 }
